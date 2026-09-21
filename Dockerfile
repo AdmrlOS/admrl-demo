@@ -18,7 +18,7 @@ RUN apt-get update && \
     sudo \
     mesa-va-drivers \
     mesa-vulkan-drivers \
-    intel-media-va-driver \
+    $( [ "$(dpkg --print-architecture)" = "amd64" ] && echo intel-media-va-driver ) \
     vainfo && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -104,9 +104,12 @@ RUN mkdir -p /etc/dconf/profile && \
     dconf update
 
 # Install Google Chrome (Avoiding Firefox because Ubuntu forces snapd for it, which we masked)
-RUN wget -q -O chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    apt-get update && apt-get install -y ./chrome.deb && \
-    rm chrome.deb && \
+# Google only publishes Chrome debs for amd64, so skip the install on arm64
+RUN if [ "$(dpkg --print-architecture)" = "amd64" ]; then \
+        wget -q -O chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+        apt-get update && apt-get install -y ./chrome.deb && \
+        rm chrome.deb; \
+    fi && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

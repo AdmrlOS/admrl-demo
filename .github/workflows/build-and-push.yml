@@ -1,6 +1,7 @@
 name: Build and Push Docker Image
 
-permissions: write-all
+permissions:
+  contents: read
 
 on:
   push:
@@ -19,15 +20,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Set up QEMU for multi-architecture support
+      # 2. Derive GHCR image name and tag
+      # ghcr.io requires lowercase image names (repo owner is mixed case),
+      # and branch names may contain characters (e.g. '/') that are invalid in tags
+      - name: Set image name and tag
+        run: |
+          echo "IMAGE_NAME=$(echo "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]')/systemd-container" >> "$GITHUB_ENV"
+          echo "IMAGE_TAG=$(echo "$GITHUB_REF_NAME" | tr '/' '-')" >> "$GITHUB_ENV"
+
+      # 3. Set up QEMU for multi-architecture support
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
-      # 3. Set up Docker Buildx
+      # 4. Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 4. Log in to GitHub Container Registry
+      # 5. Log in to GitHub Container Registry
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -35,7 +44,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 5. Build and Push Docker Image for multiple architectures
+      # 6. Build and Push Docker Image for multiple architectures
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
         with:
@@ -43,7 +52,7 @@ jobs:
           file: ./Dockerfile
           outputs: type=registry,oci-mediatypes=true,compression=estargz,force-compression=true
           provenance: true
-          tags: |
-            ghcr.io/${{ github.repository }}/systemd-container:${{ github.head_ref || github.ref_name }}
+          platforms: linux/amd64,linux/arm64
+          tags: ghcr.io/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
