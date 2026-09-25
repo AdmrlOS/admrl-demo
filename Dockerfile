@@ -193,7 +193,7 @@ sleep 1
 
 # 7. Start Weston Compositor
 echo "Starting Weston..."
-weston --socket=wayland-0 --config=/etc/xdg/weston/weston.ini &
+weston --debug --socket=wayland-0 --config=/etc/xdg/weston/weston.ini &
 
 # 8. Wait for Wayland display socket
 echo "Waiting for Wayland display socket ($WAYLAND_DISPLAY)..."
