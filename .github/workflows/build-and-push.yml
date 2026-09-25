@@ -15,6 +15,10 @@ jobs:
       id-token: write
 
     steps:
+      - name: Lowercase image name
+        id: image
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY,,}/systemd-container" >> "$GITHUB_OUTPUT"
+
       # 1. Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -44,7 +48,7 @@ jobs:
           outputs: type=registry,oci-mediatypes=true,compression=estargz,force-compression=true
           provenance: true
           tags: |
-            ghcr.io/${{ github.repository }}/systemd-container:${{ github.head_ref || github.ref_name }}
+            ${{ steps.image.outputs.name }}:${{ github.head_ref || github.ref_name }}
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
