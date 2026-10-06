@@ -1,0 +1,78 @@
+name: ANPR container
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'Dockerfile.anpr'
+      - 'anpr/**'
+      - 'anpr.py'
+      - 'web/**'
+      - 'scripts/*anpr*'
+      - 'scripts/model_sources.json'
+      - 'tests/**'
+      - '.github/workflows/anpr.yml'
+  pull_request:
+    paths:
+      - 'Dockerfile.anpr'
+      - 'anpr/**'
+      - 'anpr.py'
+      - 'web/**'
+      - 'scripts/*anpr*'
+      - 'scripts/model_sources.json'
+      - 'tests/**'
+      - '.github/workflows/anpr.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  arm64-container:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build RK3588 runtime image and compile both models
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.anpr
+          platforms: linux/arm64
+          tags: admrl-anpr:rk3588
+          load: true
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Verify runtime CLI
+        run: |
+          docker run --rm admrl-anpr:rk3588 --help
+      - name: Build CPU test image and run unit suite
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.anpr
+          target: cpu-test
+          platforms: linux/arm64
+          tags: admrl-anpr:cpu-test
+          load: true
+          push: false
+          cache-from: type=gha
+      - name: Run full detection and OCR against bundled sample
+        run: |
+          docker run --rm admrl-anpr:cpu-test --backend onnx --image /opt/models/sample.jpg > sample-results.jsonl
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          records = [json.loads(line) for line in Path('sample-results.jsonl').read_text().splitlines() if line.strip()]
+          assert len(records) == 1, 'Expected one JSON result for the sample'
+          plates = records[0]['plates']
+          # These are fixed-model regression outputs, not ground-truth labels.
+          assert {plate['plate'] for plate in plates} == {'B2V9L7', 'EDU4356'}, plates
+          for plate in plates:
+              assert plate['accepted'], plate
+              for key in ('confidence', 'detection_confidence', 'recognition_confidence'):
+                  assert 0 < plate[key] <= 1, (key, plate)
+              x0, y0, x1, y1 = plate['bbox']
+              assert 0 <= x0 < x1 and 0 <= y0 < y1, plate
+          PY

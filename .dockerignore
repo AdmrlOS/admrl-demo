@@ -1,0 +1,13 @@
+.git
+.DS_Store
+__pycache__
+*.py[cod]
+.venv
+venv
+work
+outputs
+models
+*.tar
+*.tar.gz
+*.oci
+*.log

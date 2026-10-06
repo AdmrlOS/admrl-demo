@@ -1,0 +1,30 @@
+{
+  "detector_source": {
+    "url": "https://github.com/we0091234/Chinese_license_plate_detection_recognition/archive/670b765c09fff11850a7b1c542787ad66c24ae50.tar.gz",
+    "sha256": "c465a49e0161bac9cccac8980eed159dbd93fdfc2ddb1a9e189d650890e70807",
+    "revision": "670b765c09fff11850a7b1c542787ad66c24ae50",
+    "weights_path": "weights/plate_detect.pt",
+    "weights_sha256": "585d1c6067d0fbe6a7116f39c53b3b338faf50129c58016aa531e925d25f4ec0",
+    "sample_path": "imgs/single_blue.jpg",
+    "sample_sha256": "98510d7e933a00b6f700c923f9a1e7729d3019792882910f8886a37a70515e9a",
+    "license": "GPL-3.0",
+    "repository": "https://github.com/we0091234/Chinese_license_plate_detection_recognition",
+    "training_region": "Chinese licence plates; Australian accuracy is not established"
+  },
+  "recognizer": {
+    "url": "https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/PPOCR/ppocrv4_rec.onnx",
+    "sha256": "773fc4e13c25f4847fb82aa2112dc673355c13c0b32b066ae2fb082478810916",
+    "repository": "https://github.com/airockchip/rknn_model_zoo/tree/bad6c7334531becaf90a561988519b7bec34d0ab/examples/PPOCR/PPOCR-Rec",
+    "revision": "bad6c7334531becaf90a561988519b7bec34d0ab",
+    "license": "Apache-2.0",
+    "vocabulary": "PaddleOCR ppocr_keys_v1 Chinese and Latin vocabulary"
+  },
+  "dictionary": {
+    "url": "https://raw.githubusercontent.com/airockchip/rknn_model_zoo/bad6c7334531becaf90a561988519b7bec34d0ab/examples/PPOCR/PPOCR-Rec/model/ppocr_keys_v1.txt",
+    "sha256": "28b2362ad4ab2dc38769aa72feb535e3a9ddb3fd2a7585a05920e6393b1dc7f7"
+  },
+  "recognizer_license": {
+    "url": "https://raw.githubusercontent.com/airockchip/rknn_model_zoo/bad6c7334531becaf90a561988519b7bec34d0ab/LICENSE",
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+  }
+}

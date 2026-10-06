@@ -1,0 +1,91 @@
+# syntax=docker/dockerfile:1
+
+# Match the original NPU demo's Debian Bookworm / CPython 3.11 runtime.
+# Build with --platform linux/arm64 for Admiral RK3588.
+ARG DEBIAN_IMAGE=debian:bookworm-slim@sha256:7c7b2c966bc9ee8cedfeef67e0e279108992c77681fa595db4a9d65c06ccc587
+FROM ${DEBIAN_IMAGE} AS base
+ARG DEBIAN_FRONTEND=noninteractive
+ARG TARGETARCH
+RUN test "${TARGETARCH}" = "arm64" || \
+    (echo "This RK3588 image requires --platform linux/arm64" >&2; exit 1)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates curl python3-venv libgl1 libglib2.0-0 libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+ENV PATH=/venv/bin:$PATH \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+RUN python3 -m venv /venv \
+    && pip install --no-cache-dir pip==24.3.1
+
+# Fetch individual files at an immutable SDK commit; do not clone the SDK.
+FROM base AS vendor
+ARG RKNN_COMMIT=59a913d172e7f5ff03c9076e2ec7b1b1288ffd08
+RUN mkdir -p /vendor \
+    && curl -fsSL --retry 3 -o /vendor/rknn_toolkit2-2.3.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl \
+      https://raw.githubusercontent.com/airockchip/rknn-toolkit2/${RKNN_COMMIT}/rknn-toolkit2/packages/arm64/rknn_toolkit2-2.3.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl \
+    && curl -fsSL --retry 3 -o /vendor/rknn_toolkit_lite2-2.3.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl \
+      https://raw.githubusercontent.com/airockchip/rknn-toolkit2/${RKNN_COMMIT}/rknn-toolkit-lite2/packages/rknn_toolkit_lite2-2.3.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl \
+    && curl -fsSL --retry 3 -o /vendor/librknnrt.so \
+      https://raw.githubusercontent.com/airockchip/rknn-toolkit2/${RKNN_COMMIT}/rknpu2/runtime/Linux/librknn_api/aarch64/librknnrt.so \
+    && curl -fsSL --retry 3 -o /vendor/RKNN-SDK-LICENSE.txt \
+      https://raw.githubusercontent.com/airockchip/rknn-toolkit2/${RKNN_COMMIT}/LICENSE \
+    && cd /vendor \
+    && echo '2793b0f4c008c13aae1d19c7cd9af891222d1bbe9e012ced05ec49d53240ed9c  rknn_toolkit2-2.3.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl' | sha256sum -c - \
+    && echo 'bda74f1179e15fccb8726054a24898982522784b65bb340b20146955d254e800  rknn_toolkit_lite2-2.3.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl' | sha256sum -c - \
+    && echo 'd31fc19c85b85f6091b2bd0f6af9d962d5264a4e410bfb536402ec92bac738e8  librknnrt.so' | sha256sum -c -
+
+# Conversion runs at image build time and needs no NPU device.
+FROM base AS toolkit
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      build-essential cmake python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+COPY anpr/requirements-build.txt /tmp/requirements-build.txt
+COPY --from=vendor /vendor/rknn_toolkit2-2.3.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl /tmp/
+RUN pip install --no-cache-dir -r /tmp/requirements-build.txt \
+      /tmp/rknn_toolkit2-2.3.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl \
+    && pip check \
+    && rm /tmp/*.whl
+WORKDIR /opt/anpr
+FROM toolkit AS model-build
+COPY scripts/setup_anpr_models.py scripts/setup_anpr_models.py
+COPY scripts/model_sources.json scripts/model_sources.json
+RUN python scripts/setup_anpr_models.py --output-dir /opt/models --convert
+
+# Optional CPU verification image: same ONNX models and application, no NPU.
+FROM base AS cpu-test
+COPY anpr/requirements-runtime.txt /tmp/requirements-runtime.txt
+RUN pip install --no-cache-dir -r /tmp/requirements-runtime.txt onnxruntime==1.19.2 \
+    && pip check
+COPY --from=model-build /opt/models/ /opt/models/
+WORKDIR /opt/anpr
+COPY anpr/ anpr/
+COPY anpr.py anpr.py
+COPY web/ web/
+COPY tests/ tests/
+RUN python -m unittest discover -s tests -v
+ENTRYPOINT ["/venv/bin/python", "/opt/anpr/anpr.py"]
+CMD ["--backend", "onnx"]
+
+# Default final image has only Lite2, the vendor runtime, and compiled models.
+FROM base AS runtime
+LABEL org.opencontainers.image.title="Admiral RK3588 licence plate recognition demo" \
+      org.opencontainers.image.source="https://github.com/AdmrlOS/admrl-demo" \
+      org.opencontainers.image.description="Plate detection and PP-OCR recognition using RKNN Lite2"
+COPY anpr/requirements-runtime.txt /tmp/requirements-runtime.txt
+COPY --from=vendor /vendor/rknn_toolkit_lite2-2.3.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl /tmp/
+RUN pip install --no-cache-dir -r /tmp/requirements-runtime.txt \
+      /tmp/rknn_toolkit_lite2-2.3.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl \
+    && pip check \
+    && rm /tmp/*.whl
+COPY --from=vendor /vendor/librknnrt.so /usr/lib/librknnrt.so
+COPY --from=vendor /vendor/RKNN-SDK-LICENSE.txt /usr/share/licenses/rknn/RKNN-SDK-LICENSE.txt
+COPY --from=model-build /opt/models/ /opt/models/
+WORKDIR /opt/anpr
+COPY anpr/ anpr/
+COPY anpr.py anpr.py
+COPY web/ web/
+RUN python -c "import ctypes, cv2, numpy; from rknnlite.api import RKNNLite; ctypes.CDLL('/usr/lib/librknnrt.so')" \
+    && python anpr.py --help
+EXPOSE 8000
+ENTRYPOINT ["/venv/bin/python", "/opt/anpr/anpr.py"]
+CMD ["--serve"]

@@ -1,0 +1,5 @@
+# Keep NumPy 1.x: RKNN Toolkit/Lite 2.3.2 is built against this ABI.
+numpy==1.26.4
+opencv-python-headless==4.10.0.84
+psutil==6.0.0
+ruamel.yaml==0.18.6
