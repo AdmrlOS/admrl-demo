@@ -102,6 +102,18 @@ The ANPR CI workflow repeats both builds, the unit suite, and the bundled scene
 regression with checks for strings, accepted flags, score ranges and box bounds.
 It does not publish an image.
 
+The original `Build and Push Docker Image` workflow now selects
+`Dockerfile.anpr` for the `anpr-rk3588` branch and generates its registry tags
+with Docker Metadata Action, which lowercases the repository path. Its image
+name is `ghcr.io/admrlos/admrl-demo/systemd-container:anpr-rk3588`.
+For this workflow repair, both workflows passed actionlint 1.7.12. The official
+Metadata Action v6 bundle was exercised against fixture repository metadata
+for branch pushes, manual dispatch, a branch containing a slash, and tag
+pushes; all four produced the expected single tag without a `latest` alias.
+The ARM64 runtime image also built successfully with the corrected registry
+tag, using cached model conversion layers. Registry publication is performed
+by GitHub Actions and is not covered by those local checks.
+
 ## Exact hardware blocker
 
 This environment is an Apple Silicon desktop, with no RK3588 NPU or RKNPU

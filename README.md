@@ -58,7 +58,19 @@ reads, processing rate, latency and connection state. It uses the camera
 connected to the Admiral device; the viewing browser does not need camera
 permissions. All page assets are served by the container, so it works offline.
 
-To publish for deployment, tag and push to a registry you can access:
+The `Build and Push Docker Image` workflow publishes pushes to `anpr-rk3588`
+using `Dockerfile.anpr` as:
+`ghcr.io/admrlos/admrl-demo/systemd-container:anpr-rk3588`.
+To use that image on the board after the workflow succeeds:
+
+```sh
+ANPR_IMAGE=ghcr.io/admrlos/admrl-demo/systemd-container:anpr-rk3588 ./scripts/run-anpr.sh
+```
+
+Other branches and tag refs use the original `Dockerfile`. The separate ANPR
+validation workflow builds and tests without publishing.
+
+To publish a local build manually, tag and push to a registry you can access:
 
 ```sh
 docker tag admrl-anpr:rk3588 ghcr.io/admrlos/admrl-demo/anpr:rk3588
@@ -66,8 +78,7 @@ docker push ghcr.io/admrlos/admrl-demo/anpr:rk3588
 ```
 
 These commands publish under the Admiral organisation; substitute your own
-registry/repository when appropriate. The supplied ANPR CI workflow builds and
-tests without publishing.
+registry/repository when appropriate.
 
 Deploy the ARM64 OCI image through the Admiral dashboard/API, preserving its
 entrypoint. Allow access to the host's Rockchip NPU device and allocation devices
