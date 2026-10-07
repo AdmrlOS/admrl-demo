@@ -12,8 +12,8 @@
   <div class="shell">
     <header class="topbar">
       <a class="brand" href="/" aria-label="Admiral plate recognition home">
-        <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><path d="M16 3 29 27H3L16 3Z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="m10 21 6-11 6 11H10Z" fill="currentColor"/></svg>
-        <span>ADMIRAL<span class="brand-divider">/</span><span class="brand-product">ANPR</span></span>
+        <img class="brand-logo" src="/admiral-logo.svg" width="152" height="34" alt="Admiral">
+        <span class="brand-divider" aria-hidden="true">/</span><span class="brand-product">ANPR</span>
       </a>
       <span id="connection" class="connection"><span class="dot"></span><span id="connection-label">Connecting</span></span>
     </header>
@@ -28,9 +28,9 @@
 
       <section class="metrics" aria-label="Processing metrics">
         <div class="metric"><span class="metric-label">PROCESSING SPEED</span><div><strong id="fps">—</strong><span class="metric-unit">fps</span></div><span class="metric-hint">Frames processed per second</span></div>
-        <div class="metric"><span class="metric-label">PIPELINE LATENCY</span><div><strong id="latency">—</strong><span class="metric-unit">ms</span></div><span class="metric-hint">Detection + crop + recognition</span></div>
+        <div class="metric"><span class="metric-label">TOTAL PROCESSING</span><div><strong id="latency">—</strong><span class="metric-unit">ms</span></div><span class="metric-hint" id="pipeline-time">Latest frame · inference + preview</span></div>
+        <div class="metric"><span class="metric-label">FRAME RESOLUTION</span><div><strong id="resolution" class="resolution-value">—</strong></div><span class="metric-hint" id="capture-resolution">Waiting for an actual frame</span></div>
         <div class="metric"><span class="metric-label">PLATES IN FRAME</span><div><strong id="plate-count">—</strong></div><span class="metric-hint" id="accepted-count">Waiting for a result</span></div>
-        <div class="metric"><span class="metric-label">SOURCE FRAME</span><div><strong id="frame">—</strong></div><span class="metric-hint" id="result-time">No result yet</span></div>
       </section>
 
       <div class="monitor-grid">
@@ -40,7 +40,7 @@
             <img id="preview" src="/stream.mjpg" alt="Annotated recognition preview from the device">
             <div id="feed-overlay" class="feed-overlay"><div class="feed-placeholder"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="4" y="10" width="29" height="25" rx="5" stroke="currentColor" stroke-width="1.5"/><path d="m33 17 7-4v20l-7-4M13 20h11M13 26h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><strong id="overlay-title">Waiting for the device</strong><span id="overlay-detail">The preview will appear when a frame is ready.</span></div></div>
           </div>
-          <div class="feed-footer"><span class="source-label">SOURCE</span><span id="source">Waiting for pipeline</span><span class="feed-footer-note">Annotated preview</span></div>
+          <div class="feed-footer"><div class="feed-source"><span class="source-label">SOURCE</span><span id="source">Waiting for pipeline</span></div><div class="feed-meta"><span>Frame <span id="frame">—</span></span><span id="result-time">No result yet</span></div></div>
         </section>
 
         <section class="panel reads-panel" aria-labelledby="reads-title">
@@ -49,6 +49,18 @@
           <p class="reads-note">Accepted indicates the OCR threshold passed. Scores describe model certainty.</p>
         </section>
       </div>
+
+      <section class="panel performance-panel" aria-labelledby="performance-title">
+        <div class="panel-heading"><div><h2 id="performance-title">Frame performance</h2><span class="section-detail">Latest completed frame · measured on this device</span></div><span id="timing-state" class="count-badge">Waiting</span></div>
+        <div class="stage-grid">
+          <div class="stage-card"><div class="stage-label"><span class="stage-dot detector"></span><h3>Plate detector</h3></div><div class="stage-value"><strong id="detector-time">—</strong><span>ms</span></div><div class="stage-track"><span id="detector-bar" class="detector"></span></div><p id="detector-detail">Preprocess + inference + decode</p></div>
+          <div class="stage-card"><div class="stage-label"><span class="stage-dot ocr"></span><h3>Plate OCR</h3></div><div class="stage-value"><strong id="ocr-time">—</strong><span>ms</span></div><div class="stage-track"><span id="ocr-bar" class="ocr"></span></div><p id="ocr-detail">Crops + recognition across all plates</p></div>
+          <div class="stage-card"><div class="stage-label"><span class="stage-dot preview"></span><h3>Web preview</h3></div><div class="stage-value"><strong id="preview-time">—</strong><span>ms</span></div><div class="stage-track"><span id="preview-bar" class="preview"></span></div><p id="preview-detail">Annotation + JPEG encoding</p></div>
+          <div class="stage-card"><div class="stage-label"><span class="stage-dot capture"></span><h3>Capture read</h3></div><div class="stage-value"><strong id="capture-time">—</strong><span>ms</span></div><div class="stage-track"><span id="capture-bar" class="capture"></span></div><p>Time waiting for the next source frame</p></div>
+        </div>
+        <div class="performance-footer"><span id="frame-age">Frame age unavailable</span><span id="performance-note">Stage times are measured per processed frame, not camera FPS.</span></div>
+        <div id="camera-settings" class="camera-settings" hidden><div><span>CAMERA TARGET</span><strong id="camera-requested">—</strong></div><div><span>CAMERA REPORTED</span><strong id="camera-negotiated">—</strong></div><p id="camera-setting-note">Camera-reported FPS is a capture setting; processing speed is measured separately.</p></div>
+      </section>
 
       <section class="panel history-panel" aria-labelledby="history-title">
         <div class="panel-heading"><div><h2 id="history-title">Recently seen</h2><span class="section-detail">This browser session · up to 20 unique strings</span></div><span id="history-count" class="count-badge">0</span></div>

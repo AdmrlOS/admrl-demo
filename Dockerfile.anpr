@@ -60,6 +60,7 @@ COPY --from=model-build /opt/models/ /opt/models/
 WORKDIR /opt/anpr
 COPY anpr/ anpr/
 COPY anpr.py anpr.py
+COPY scripts/benchmark_anpr.py scripts/benchmark_capacity.py scripts/
 COPY web/ web/
 COPY tests/ tests/
 RUN python -m unittest discover -s tests -v
@@ -83,6 +84,7 @@ COPY --from=model-build /opt/models/ /opt/models/
 WORKDIR /opt/anpr
 COPY anpr/ anpr/
 COPY anpr.py anpr.py
+COPY scripts/benchmark_anpr.py scripts/benchmark_capacity.py scripts/
 COPY web/ web/
 RUN python -c "import ctypes, cv2, numpy; from rknnlite.api import RKNNLite; ctypes.CDLL('/usr/lib/librknnrt.so')" \
     && python anpr.py --help

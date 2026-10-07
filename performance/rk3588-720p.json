@@ -1,0 +1,3782 @@
+{
+  "date": "2026-10-07",
+  "device": {
+    "soc": "RK3588",
+    "os": "AdmiralOS 1.0.6",
+    "kernel": "6.1.115",
+    "rknpu_driver": "0.9.8",
+    "rknn_runtime": "2.3.2"
+  },
+  "scope": "Measured upper bound for the current FP16 models and fixed public 720p workloads; capture, decoding and network excluded. No individual worker verified 30 FPS.",
+  "preview_included": true,
+  "preview_jpeg_quality": 80,
+  "host_governors_changed": false,
+  "scripts_sha256": {
+    "anpr.py": "6400311d7203eac107a0c63c980e2ec9a23153d1d3c65e8d1ec5b35d72d07aa9",
+    "scripts/benchmark_capacity.py": "f58010fb0baada82967faa327a78de4944008b0331b61d5dc6d67c5db272e639",
+    "scripts/benchmark_anpr.py": "07035a24de1259fa47690309d9d77cf6807cb9f10823e514e1209cd902ea6a7a"
+  },
+  "runs": [
+    {
+      "backend": "rknn",
+      "model_precision": "FP16 RKNN, unquantized",
+      "workload": "empty",
+      "expected_plates_per_frame": 0,
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frame_sha256": "822e3a311bc34185394aeb709bb83310f1243089b95cdadc218eee179b1d6f78",
+      "platform": "Linux-6.1.115-aarch64-with-glibc2.36",
+      "opencv_version": "4.10.0",
+      "opencv_threads_requested": 1,
+      "cpu_cores_requested": "all",
+      "cpu_cores_selected": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "model_sha256": {
+        "plate_detector": "4faa83a8c55290d7185c7d369784147d53ad6bce04baeaa9e85c0a3995bc7b23",
+        "plate_recognizer": "092ee63ff7e784981959d6f8df1fd1f35b9fefbc4fcaeb7d867047a162078efd"
+      },
+      "model_asset_sha256": {
+        "model_metadata.json": "6f475cc59a4634321c9b7acd7f214b3b362d1b5cc174ee1e3a86225668fe1d6e",
+        "ppocr_keys_v1.txt": "28b2362ad4ab2dc38769aa72feb535e3a9ddb3fd2a7585a05920e6393b1dc7f7"
+      },
+      "module_sha256": "848353c3114b79d1d77154807013ff0584553fa648a0cc86cbad23efe9cf7055",
+      "warmup_seconds": 5.0,
+      "included": [
+        "detector",
+        "all detected plate OCR",
+        "annotation",
+        "JPEG quality 80"
+      ],
+      "excluded": [
+        "initialization",
+        "warmup",
+        "input preparation",
+        "capture",
+        "decode",
+        "network"
+      ],
+      "capacity": {
+        "backend": "rknn",
+        "target_fps_per_stream": 30,
+        "maximum_measured_aggregate_fps": 72.6,
+        "best_tested_concurrency": 12,
+        "largest_tested_stream_count_meeting_target": 0,
+        "note": "Aggregate FPS / target is a fractional processing budget, not verified real-time streams; only tested per-stream rates verify the target. ONNX results do not establish NPU capacity."
+      },
+      "errors": [],
+      "measurement_name": "rk3588-capacity-empty",
+      "configurations": [
+        {
+          "stream_count": 3,
+          "measurement_seconds": 20.0,
+          "completed_frames": 834,
+          "aggregate_processing_fps": 41.699999999999996,
+          "minimum_per_stream_fps": 13.85,
+          "per_stream_fps": [
+            13.95,
+            13.85,
+            13.9
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 1.39,
+          "timings_ms": {
+            "annotation": {
+              "p50": 0.40876649973142776,
+              "p95": 0.7624375000432336
+            },
+            "crop": {
+              "p50": 0.0,
+              "p95": 0.0
+            },
+            "detector_inference": {
+              "p50": 54.7255,
+              "p95": 60.81995
+            },
+            "detector_postprocess": {
+              "p50": 9.2615,
+              "p95": 11.257349999999999
+            },
+            "detector_preprocess": {
+              "p50": 1.643,
+              "p95": 2.25735
+            },
+            "jpeg": {
+              "p50": 7.1666084995740675,
+              "p95": 11.44181114959792
+            },
+            "pipeline_total": {
+              "p50": 64.46549999999999,
+              "p95": 73.0457
+            },
+            "pipeline_wall": {
+              "p50": 64.5263075002731,
+              "p95": 73.11493704937675
+            },
+            "processing_total": {
+              "p50": 72.8941315001066,
+              "p95": 82.26139715020508
+            },
+            "recognition_inference": {
+              "p50": 0.0,
+              "p95": 0.0
+            },
+            "recognition_postprocess": {
+              "p50": 0.0,
+              "p95": 0.0
+            },
+            "recognition_preprocess": {
+              "p50": 0.0,
+              "p95": 0.0
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": true,
+            "cores": {
+              "0": {
+                "mean": 43.32432432432432,
+                "min": 41.0,
+                "max": 47.0,
+                "sample_count": 37
+              },
+              "1": {
+                "mean": 43.7027027027027,
+                "min": 42.0,
+                "max": 45.0,
+                "sample_count": 37
+              },
+              "2": {
+                "mean": 44.108108108108105,
+                "min": 41.0,
+                "max": 47.0,
+                "sample_count": 37
+              }
+            },
+            "source": "host telemetry, measurement window"
+          },
+          "workers_requiring_forced_cleanup": [],
+          "hardware_observations": {
+            "scope": "measurement window",
+            "sample_count": 37,
+            "npu_frequency_hz": {
+              "/sys/class/devfreq/fdab0000.npu/cur_freq": {
+                "mean": 1000000000.0,
+                "min": 1000000000,
+                "max": 1000000000,
+                "sample_count": 37
+              }
+            },
+            "temperature_c": {
+              "/sys/class/thermal/thermal_zone0:soc-thermal": {
+                "mean": 49.89805405405406,
+                "min": 49.0,
+                "max": 50.846,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone1:bigcore0-thermal": {
+                "mean": 50.37202702702702,
+                "min": 49.923,
+                "max": 50.846,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone2:bigcore1-thermal": {
+                "mean": 50.54664864864865,
+                "min": 49.923,
+                "max": 50.846,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone3:littlecore-thermal": {
+                "mean": 50.09762162162163,
+                "min": 49.923,
+                "max": 50.846,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone4:center-thermal": {
+                "mean": 49.44902702702703,
+                "min": 49.0,
+                "max": 49.923,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone5:gpu-thermal": {
+                "mean": 48.900108108108114,
+                "min": 48.076,
+                "max": 49.0,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone6:npu-thermal": {
+                "mean": 49.099783783783785,
+                "min": 49.0,
+                "max": 49.923,
+                "sample_count": 37
+              }
+            },
+            "cpu_busy_percent": {
+              "cpu": {
+                "mean": 20.750329599044978,
+                "min": 19.128329297820823,
+                "max": 23.933649289099524,
+                "sample_count": 36
+              },
+              "cpu0": {
+                "mean": 8.377171861326373,
+                "min": 0.0,
+                "max": 16.326530612244895,
+                "sample_count": 36
+              },
+              "cpu1": {
+                "mean": 3.0573742877202,
+                "min": 0.0,
+                "max": 11.538461538461542,
+                "sample_count": 36
+              },
+              "cpu2": {
+                "mean": 2.478047420395429,
+                "min": 0.0,
+                "max": 9.433962264150942,
+                "sample_count": 36
+              },
+              "cpu3": {
+                "mean": 1.8991415545398773,
+                "min": 0.0,
+                "max": 5.454545454545457,
+                "sample_count": 36
+              },
+              "cpu4": {
+                "mean": 33.33461446474765,
+                "min": 18.867924528301884,
+                "max": 49.056603773584904,
+                "sample_count": 36
+              },
+              "cpu5": {
+                "mean": 37.74961469644846,
+                "min": 18.867924528301884,
+                "max": 52.83018867924528,
+                "sample_count": 36
+              },
+              "cpu6": {
+                "mean": 39.285217210362106,
+                "min": 23.076923076923073,
+                "max": 53.84615384615385,
+                "sample_count": 36
+              },
+              "cpu7": {
+                "mean": 40.12737507533413,
+                "min": 28.846153846153843,
+                "max": 53.84615384615385,
+                "sample_count": 36
+              }
+            }
+          },
+          "worker_plate_count_distributions": [
+            {
+              "0": 279
+            },
+            {
+              "0": 277
+            },
+            {
+              "0": 278
+            }
+          ]
+        },
+        {
+          "stream_count": 6,
+          "measurement_seconds": 20.0,
+          "completed_frames": 1195,
+          "aggregate_processing_fps": 59.74999999999999,
+          "minimum_per_stream_fps": 9.7,
+          "per_stream_fps": [
+            10.2,
+            9.7,
+            9.95,
+            10.25,
+            9.8,
+            9.85
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 1.9916666666666665,
+          "timings_ms": {
+            "annotation": {
+              "p50": 0.6136599995443248,
+              "p95": 1.0940005999145794
+            },
+            "crop": {
+              "p50": 0.0,
+              "p95": 0.0
+            },
+            "detector_inference": {
+              "p50": 78.524,
+              "p95": 90.471
+            },
+            "detector_postprocess": {
+              "p50": 10.563,
+              "p95": 12.7826
+            },
+            "detector_preprocess": {
+              "p50": 1.894,
+              "p95": 7.1445
+            },
+            "jpeg": {
+              "p50": 9.005400999740232,
+              "p95": 16.824635599732574
+            },
+            "pipeline_total": {
+              "p50": 90.398,
+              "p95": 105.1295
+            },
+            "pipeline_wall": {
+              "p50": 90.45791899916367,
+              "p95": 105.1798191000671
+            },
+            "processing_total": {
+              "p50": 101.77246100010962,
+              "p95": 119.00572899967301
+            },
+            "recognition_inference": {
+              "p50": 0.0,
+              "p95": 0.0
+            },
+            "recognition_postprocess": {
+              "p50": 0.0,
+              "p95": 0.0
+            },
+            "recognition_preprocess": {
+              "p50": 0.0,
+              "p95": 0.0
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": true,
+            "cores": {
+              "0": {
+                "mean": 67.32432432432432,
+                "min": 60.0,
+                "max": 76.0,
+                "sample_count": 37
+              },
+              "1": {
+                "mean": 65.51351351351352,
+                "min": 61.0,
+                "max": 69.0,
+                "sample_count": 37
+              },
+              "2": {
+                "mean": 66.16216216216216,
+                "min": 61.0,
+                "max": 74.0,
+                "sample_count": 37
+              }
+            },
+            "source": "host telemetry, measurement window"
+          },
+          "workers_requiring_forced_cleanup": [],
+          "hardware_observations": {
+            "scope": "measurement window",
+            "sample_count": 37,
+            "npu_frequency_hz": {
+              "/sys/class/devfreq/fdab0000.npu/cur_freq": {
+                "mean": 1000000000.0,
+                "min": 1000000000,
+                "max": 1000000000,
+                "sample_count": 37
+              }
+            },
+            "temperature_c": {
+              "/sys/class/thermal/thermal_zone0:soc-thermal": {
+                "mean": 52.31781081081081,
+                "min": 51.769,
+                "max": 52.692,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone1:bigcore0-thermal": {
+                "mean": 52.692,
+                "min": 51.769,
+                "max": 53.615,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone2:bigcore1-thermal": {
+                "mean": 52.716945945945945,
+                "min": 51.769,
+                "max": 53.615,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone3:littlecore-thermal": {
+                "mean": 52.49243243243243,
+                "min": 51.769,
+                "max": 52.692,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone4:center-thermal": {
+                "mean": 51.46964864864865,
+                "min": 50.846,
+                "max": 51.769,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone5:gpu-thermal": {
+                "mean": 50.67137837837838,
+                "min": 49.923,
+                "max": 50.846,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone6:npu-thermal": {
+                "mean": 51.39481081081081,
+                "min": 50.846,
+                "max": 51.769,
+                "sample_count": 37
+              }
+            },
+            "cpu_busy_percent": {
+              "cpu": {
+                "mean": 35.394084652952685,
+                "min": 32.853717026378895,
+                "max": 39.479905437352244,
+                "sample_count": 36
+              },
+              "cpu0": {
+                "mean": 40.74864132074375,
+                "min": 27.083333333333336,
+                "max": 54.0,
+                "sample_count": 36
+              },
+              "cpu1": {
+                "mean": 39.33147565223037,
+                "min": 22.22222222222222,
+                "max": 56.363636363636374,
+                "sample_count": 36
+              },
+              "cpu2": {
+                "mean": 24.492990767472172,
+                "min": 9.433962264150942,
+                "max": 42.307692307692314,
+                "sample_count": 36
+              },
+              "cpu3": {
+                "mean": 10.711657672652928,
+                "min": 1.851851851851849,
+                "max": 25.92592592592593,
+                "sample_count": 36
+              },
+              "cpu4": {
+                "mean": 42.83424924851118,
+                "min": 30.188679245283023,
+                "max": 58.00000000000001,
+                "sample_count": 36
+              },
+              "cpu5": {
+                "mean": 40.34709359172037,
+                "min": 28.846153846153843,
+                "max": 51.92307692307692,
+                "sample_count": 36
+              },
+              "cpu6": {
+                "mean": 42.500253058631756,
+                "min": 27.450980392156865,
+                "max": 53.84615384615385,
+                "sample_count": 36
+              },
+              "cpu7": {
+                "mean": 43.344160719546096,
+                "min": 33.333333333333336,
+                "max": 59.61538461538461,
+                "sample_count": 36
+              }
+            }
+          },
+          "worker_plate_count_distributions": [
+            {
+              "0": 204
+            },
+            {
+              "0": 194
+            },
+            {
+              "0": 199
+            },
+            {
+              "0": 205
+            },
+            {
+              "0": 196
+            },
+            {
+              "0": 197
+            }
+          ]
+        },
+        {
+          "stream_count": 12,
+          "measurement_seconds": 20.0,
+          "completed_frames": 1452,
+          "aggregate_processing_fps": 72.6,
+          "minimum_per_stream_fps": 5.95,
+          "per_stream_fps": [
+            6.0,
+            5.95,
+            6.05,
+            6.05,
+            6.0,
+            5.95,
+            6.05,
+            6.1,
+            6.2,
+            6.1,
+            6.05,
+            6.1
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 2.42,
+          "timings_ms": {
+            "annotation": {
+              "p50": 0.994718000129069,
+              "p95": 1.6701084499345598
+            },
+            "crop": {
+              "p50": 0.0,
+              "p95": 0.0
+            },
+            "detector_inference": {
+              "p50": 137.2385,
+              "p95": 165.20235
+            },
+            "detector_postprocess": {
+              "p50": 11.554,
+              "p95": 15.192400000000001
+            },
+            "detector_preprocess": {
+              "p50": 2.7705,
+              "p95": 9.756900000000002
+            },
+            "jpeg": {
+              "p50": 15.272080000158894,
+              "p95": 18.643883849517806
+            },
+            "pipeline_total": {
+              "p50": 151.8875,
+              "p95": 180.8943
+            },
+            "pipeline_wall": {
+              "p50": 151.97691250023126,
+              "p95": 180.94108120012606
+            },
+            "processing_total": {
+              "p50": 165.3963465000743,
+              "p95": 196.96665914984806
+            },
+            "recognition_inference": {
+              "p50": 0.0,
+              "p95": 0.0
+            },
+            "recognition_postprocess": {
+              "p50": 0.0,
+              "p95": 0.0
+            },
+            "recognition_preprocess": {
+              "p50": 0.0,
+              "p95": 0.0
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": true,
+            "cores": {
+              "0": {
+                "mean": 89.16216216216216,
+                "min": 79.0,
+                "max": 95.0,
+                "sample_count": 37
+              },
+              "1": {
+                "mean": 89.91891891891892,
+                "min": 79.0,
+                "max": 97.0,
+                "sample_count": 37
+              },
+              "2": {
+                "mean": 90.67567567567568,
+                "min": 81.0,
+                "max": 97.0,
+                "sample_count": 37
+              }
+            },
+            "source": "host telemetry, measurement window"
+          },
+          "workers_requiring_forced_cleanup": [],
+          "hardware_observations": {
+            "scope": "measurement window",
+            "sample_count": 37,
+            "npu_frequency_hz": {
+              "/sys/class/devfreq/fdab0000.npu/cur_freq": {
+                "mean": 1000000000.0,
+                "min": 1000000000,
+                "max": 1000000000,
+                "sample_count": 37
+              }
+            },
+            "temperature_c": {
+              "/sys/class/thermal/thermal_zone0:soc-thermal": {
+                "mean": 54.93713513513514,
+                "min": 52.692,
+                "max": 56.384,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone1:bigcore0-thermal": {
+                "mean": 55.261432432432436,
+                "min": 53.615,
+                "max": 57.307,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone2:bigcore1-thermal": {
+                "mean": 55.436054054054054,
+                "min": 53.615,
+                "max": 57.307,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone3:littlecore-thermal": {
+                "mean": 55.261432432432436,
+                "min": 53.615,
+                "max": 56.384,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone4:center-thermal": {
+                "mean": 53.889405405405405,
+                "min": 52.692,
+                "max": 54.538,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone5:gpu-thermal": {
+                "mean": 52.791783783783785,
+                "min": 51.769,
+                "max": 53.615,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone6:npu-thermal": {
+                "mean": 53.91435135135135,
+                "min": 52.692,
+                "max": 54.538,
+                "sample_count": 37
+              }
+            },
+            "cpu_busy_percent": {
+              "cpu": {
+                "mean": 50.58167665245986,
+                "min": 45.432692307692314,
+                "max": 56.440281030444964,
+                "sample_count": 36
+              },
+              "cpu0": {
+                "mean": 52.86783814518789,
+                "min": 36.170212765957444,
+                "max": 65.38461538461539,
+                "sample_count": 36
+              },
+              "cpu1": {
+                "mean": 51.66782367387487,
+                "min": 39.62264150943396,
+                "max": 70.9090909090909,
+                "sample_count": 36
+              },
+              "cpu2": {
+                "mean": 50.17737222713987,
+                "min": 36.0,
+                "max": 65.45454545454545,
+                "sample_count": 36
+              },
+              "cpu3": {
+                "mean": 51.42351384713267,
+                "min": 38.18181818181819,
+                "max": 62.5,
+                "sample_count": 36
+              },
+              "cpu4": {
+                "mean": 50.537404400943366,
+                "min": 37.735849056603776,
+                "max": 67.27272727272727,
+                "sample_count": 36
+              },
+              "cpu5": {
+                "mean": 48.44223968437805,
+                "min": 36.53846153846154,
+                "max": 62.264150943396224,
+                "sample_count": 36
+              },
+              "cpu6": {
+                "mean": 49.37144112424665,
+                "min": 39.21568627450981,
+                "max": 61.81818181818181,
+                "sample_count": 36
+              },
+              "cpu7": {
+                "mean": 49.85230828317214,
+                "min": 39.21568627450981,
+                "max": 66.66666666666667,
+                "sample_count": 36
+              }
+            }
+          },
+          "worker_plate_count_distributions": [
+            {
+              "0": 120
+            },
+            {
+              "0": 119
+            },
+            {
+              "0": 121
+            },
+            {
+              "0": 121
+            },
+            {
+              "0": 120
+            },
+            {
+              "0": 119
+            },
+            {
+              "0": 121
+            },
+            {
+              "0": 122
+            },
+            {
+              "0": 124
+            },
+            {
+              "0": 122
+            },
+            {
+              "0": 121
+            },
+            {
+              "0": 122
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "backend": "rknn",
+      "model_precision": "FP16 RKNN, unquantized",
+      "workload": "plates",
+      "expected_plates_per_frame": 2,
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frame_sha256": "9679bbcdedb5acff799be8d5a3a6e31218a37cd8f25667ba54602d1aed36b2e1",
+      "platform": "Linux-6.1.115-aarch64-with-glibc2.36",
+      "opencv_version": "4.10.0",
+      "opencv_threads_requested": 2,
+      "cpu_cores_requested": "auto",
+      "cpu_cores_selected": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "model_sha256": {
+        "plate_detector": "4faa83a8c55290d7185c7d369784147d53ad6bce04baeaa9e85c0a3995bc7b23",
+        "plate_recognizer": "092ee63ff7e784981959d6f8df1fd1f35b9fefbc4fcaeb7d867047a162078efd"
+      },
+      "model_asset_sha256": {
+        "model_metadata.json": "6f475cc59a4634321c9b7acd7f214b3b362d1b5cc174ee1e3a86225668fe1d6e",
+        "ppocr_keys_v1.txt": "28b2362ad4ab2dc38769aa72feb535e3a9ddb3fd2a7585a05920e6393b1dc7f7"
+      },
+      "module_sha256": "848353c3114b79d1d77154807013ff0584553fa648a0cc86cbad23efe9cf7055",
+      "warmup_seconds": 5.0,
+      "included": [
+        "detector",
+        "all detected plate OCR",
+        "annotation",
+        "JPEG quality 80"
+      ],
+      "excluded": [
+        "initialization",
+        "warmup",
+        "input preparation",
+        "capture",
+        "decode",
+        "network"
+      ],
+      "capacity": {
+        "backend": "rknn",
+        "target_fps_per_stream": 30,
+        "maximum_measured_aggregate_fps": 21.6,
+        "best_tested_concurrency": 3,
+        "largest_tested_stream_count_meeting_target": 0,
+        "note": "Aggregate FPS / target is a fractional processing budget, not verified real-time streams; only tested per-stream rates verify the target. ONNX results do not establish NPU capacity."
+      },
+      "errors": [],
+      "measurement_name": "rk3588-capacity-plates-1-3",
+      "configurations": [
+        {
+          "stream_count": 1,
+          "measurement_seconds": 20.0,
+          "completed_frames": 144,
+          "aggregate_processing_fps": 7.2,
+          "minimum_per_stream_fps": 7.2,
+          "per_stream_fps": [
+            7.2
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 0.24000000000000002,
+          "timings_ms": {
+            "annotation": {
+              "p50": 1.0257790004288836,
+              "p95": 1.2672322002799774
+            },
+            "crop": {
+              "p50": 0.876,
+              "p95": 1.4556499999999997
+            },
+            "detector_inference": {
+              "p50": 54.0245,
+              "p95": 59.4708
+            },
+            "detector_postprocess": {
+              "p50": 10.1115,
+              "p95": 12.51425
+            },
+            "detector_preprocess": {
+              "p50": 1.9045,
+              "p95": 1.9907000000000001
+            },
+            "jpeg": {
+              "p50": 13.148942000043462,
+              "p95": 16.461992000267855
+            },
+            "pipeline_total": {
+              "p50": 124.3175,
+              "p95": 137.5607
+            },
+            "pipeline_wall": {
+              "p50": 124.36117000015656,
+              "p95": 137.60454310004206
+            },
+            "processing_total": {
+              "p50": 137.0821795003394,
+              "p95": 152.0800771002996
+            },
+            "recognition_inference": {
+              "p50": 55.116,
+              "p95": 62.43855
+            },
+            "recognition_postprocess": {
+              "p50": 2.6865,
+              "p95": 3.50825
+            },
+            "recognition_preprocess": {
+              "p50": 0.575,
+              "p95": 0.8943999999999999
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": false,
+            "error": "FileNotFoundError: [Errno 2] No such file or directory: '/sys/kernel/debug/rknpu/load'",
+            "cores": {}
+          },
+          "workers_requiring_forced_cleanup": [],
+          "worker_plate_count_distributions": [
+            {
+              "2": 144
+            }
+          ]
+        },
+        {
+          "stream_count": 3,
+          "measurement_seconds": 20.0,
+          "completed_frames": 432,
+          "aggregate_processing_fps": 21.6,
+          "minimum_per_stream_fps": 7.15,
+          "per_stream_fps": [
+            7.25,
+            7.2,
+            7.15
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 0.7200000000000001,
+          "timings_ms": {
+            "annotation": {
+              "p50": 1.0082790004162234,
+              "p95": 1.1597393501688202
+            },
+            "crop": {
+              "p50": 0.9315,
+              "p95": 1.49145
+            },
+            "detector_inference": {
+              "p50": 56.212,
+              "p95": 61.6886
+            },
+            "detector_postprocess": {
+              "p50": 9.6385,
+              "p95": 12.401449999999999
+            },
+            "detector_preprocess": {
+              "p50": 1.2475,
+              "p95": 1.9319
+            },
+            "jpeg": {
+              "p50": 10.703365999688685,
+              "p95": 20.040630799439896
+            },
+            "pipeline_total": {
+              "p50": 124.807,
+              "p95": 138.1537
+            },
+            "pipeline_wall": {
+              "p50": 124.84689650000291,
+              "p95": 138.19127744995967
+            },
+            "processing_total": {
+              "p50": 138.59809949963164,
+              "p95": 155.17817759991885
+            },
+            "recognition_inference": {
+              "p50": 54.8675,
+              "p95": 62.6958
+            },
+            "recognition_postprocess": {
+              "p50": 2.2685,
+              "p95": 3.4136
+            },
+            "recognition_preprocess": {
+              "p50": 0.555,
+              "p95": 1.06245
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": false,
+            "error": "FileNotFoundError: [Errno 2] No such file or directory: '/sys/kernel/debug/rknpu/load'",
+            "cores": {}
+          },
+          "workers_requiring_forced_cleanup": [],
+          "worker_plate_count_distributions": [
+            {
+              "2": 145
+            },
+            {
+              "2": 144
+            },
+            {
+              "2": 143
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "backend": "rknn",
+      "model_precision": "FP16 RKNN, unquantized",
+      "workload": "plates",
+      "expected_plates_per_frame": 2,
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frame_sha256": "9679bbcdedb5acff799be8d5a3a6e31218a37cd8f25667ba54602d1aed36b2e1",
+      "platform": "Linux-6.1.115-aarch64-with-glibc2.36",
+      "opencv_version": "4.10.0",
+      "opencv_threads_requested": 2,
+      "cpu_cores_requested": "auto",
+      "cpu_cores_selected": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "model_sha256": {
+        "plate_detector": "4faa83a8c55290d7185c7d369784147d53ad6bce04baeaa9e85c0a3995bc7b23",
+        "plate_recognizer": "092ee63ff7e784981959d6f8df1fd1f35b9fefbc4fcaeb7d867047a162078efd"
+      },
+      "model_asset_sha256": {
+        "model_metadata.json": "6f475cc59a4634321c9b7acd7f214b3b362d1b5cc174ee1e3a86225668fe1d6e",
+        "ppocr_keys_v1.txt": "28b2362ad4ab2dc38769aa72feb535e3a9ddb3fd2a7585a05920e6393b1dc7f7"
+      },
+      "module_sha256": "848353c3114b79d1d77154807013ff0584553fa648a0cc86cbad23efe9cf7055",
+      "warmup_seconds": 5.0,
+      "included": [
+        "detector",
+        "all detected plate OCR",
+        "annotation",
+        "JPEG quality 80"
+      ],
+      "excluded": [
+        "initialization",
+        "warmup",
+        "input preparation",
+        "capture",
+        "decode",
+        "network"
+      ],
+      "capacity": {
+        "backend": "rknn",
+        "target_fps_per_stream": 30,
+        "maximum_measured_aggregate_fps": 30.599999999999998,
+        "best_tested_concurrency": 6,
+        "largest_tested_stream_count_meeting_target": 0,
+        "note": "Aggregate FPS / target is a fractional processing budget, not verified real-time streams; only tested per-stream rates verify the target. ONNX results do not establish NPU capacity."
+      },
+      "errors": [],
+      "measurement_name": "rk3588-capacity-plates-2-6",
+      "configurations": [
+        {
+          "stream_count": 2,
+          "measurement_seconds": 20.0,
+          "completed_frames": 293,
+          "aggregate_processing_fps": 14.65,
+          "minimum_per_stream_fps": 7.25,
+          "per_stream_fps": [
+            7.4,
+            7.25
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 0.48833333333333334,
+          "timings_ms": {
+            "annotation": {
+              "p50": 1.0313200000382494,
+              "p95": 1.2157103998106322
+            },
+            "crop": {
+              "p50": 0.918,
+              "p95": 1.4295999999999995
+            },
+            "detector_inference": {
+              "p50": 53.75,
+              "p95": 59.001999999999995
+            },
+            "detector_postprocess": {
+              "p50": 10.354,
+              "p95": 12.734
+            },
+            "detector_preprocess": {
+              "p50": 1.327,
+              "p95": 1.9822
+            },
+            "jpeg": {
+              "p50": 13.601706999907037,
+              "p95": 20.149727199714107
+            },
+            "pipeline_total": {
+              "p50": 121.508,
+              "p95": 133.786
+            },
+            "pipeline_wall": {
+              "p50": 121.52975299977697,
+              "p95": 133.83474419988488
+            },
+            "processing_total": {
+              "p50": 136.71565200002078,
+              "p95": 150.35762280003837
+            },
+            "recognition_inference": {
+              "p50": 54.133,
+              "p95": 62.30159999999999
+            },
+            "recognition_postprocess": {
+              "p50": 2.737,
+              "p95": 3.513
+            },
+            "recognition_preprocess": {
+              "p50": 0.581,
+              "p95": 0.9303999999999997
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": false,
+            "error": "FileNotFoundError: [Errno 2] No such file or directory: '/sys/kernel/debug/rknpu/load'",
+            "cores": {}
+          },
+          "workers_requiring_forced_cleanup": [],
+          "worker_plate_count_distributions": [
+            {
+              "2": 148
+            },
+            {
+              "2": 145
+            }
+          ]
+        },
+        {
+          "stream_count": 6,
+          "measurement_seconds": 20.0,
+          "completed_frames": 612,
+          "aggregate_processing_fps": 30.599999999999998,
+          "minimum_per_stream_fps": 5.05,
+          "per_stream_fps": [
+            5.1,
+            5.15,
+            5.05,
+            5.1,
+            5.15,
+            5.05
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 1.02,
+          "timings_ms": {
+            "annotation": {
+              "p50": 0.8200104998650204,
+              "p95": 1.3219338497037818
+            },
+            "crop": {
+              "p50": 0.922,
+              "p95": 1.40245
+            },
+            "detector_inference": {
+              "p50": 84.16,
+              "p95": 95.15525
+            },
+            "detector_postprocess": {
+              "p50": 5.4445,
+              "p95": 12.67015
+            },
+            "detector_preprocess": {
+              "p50": 1.407,
+              "p95": 3.4316499999999976
+            },
+            "jpeg": {
+              "p50": 10.505516000193893,
+              "p95": 20.40529610003432
+            },
+            "pipeline_total": {
+              "p50": 181.8865,
+              "p95": 201.82199999999997
+            },
+            "pipeline_wall": {
+              "p50": 181.92323599987503,
+              "p95": 201.86591699975904
+            },
+            "processing_total": {
+              "p50": 195.3047160004644,
+              "p95": 217.88590249966546
+            },
+            "recognition_inference": {
+              "p50": 85.1155,
+              "p95": 98.87259999999999
+            },
+            "recognition_postprocess": {
+              "p50": 2.3514999999999997,
+              "p95": 3.2333499999999997
+            },
+            "recognition_preprocess": {
+              "p50": 0.514,
+              "p95": 0.88145
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": false,
+            "error": "FileNotFoundError: [Errno 2] No such file or directory: '/sys/kernel/debug/rknpu/load'",
+            "cores": {}
+          },
+          "workers_requiring_forced_cleanup": [],
+          "worker_plate_count_distributions": [
+            {
+              "2": 102
+            },
+            {
+              "2": 103
+            },
+            {
+              "2": 101
+            },
+            {
+              "2": 102
+            },
+            {
+              "2": 103
+            },
+            {
+              "2": 101
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "backend": "rknn",
+      "model_precision": "FP16 RKNN, unquantized",
+      "workload": "plates",
+      "expected_plates_per_frame": 2,
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frame_sha256": "9679bbcdedb5acff799be8d5a3a6e31218a37cd8f25667ba54602d1aed36b2e1",
+      "platform": "Linux-6.1.115-aarch64-with-glibc2.36",
+      "opencv_version": "4.10.0",
+      "opencv_threads_requested": 2,
+      "cpu_cores_requested": "auto",
+      "cpu_cores_selected": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "model_sha256": {
+        "plate_detector": "4faa83a8c55290d7185c7d369784147d53ad6bce04baeaa9e85c0a3995bc7b23",
+        "plate_recognizer": "092ee63ff7e784981959d6f8df1fd1f35b9fefbc4fcaeb7d867047a162078efd"
+      },
+      "model_asset_sha256": {
+        "model_metadata.json": "6f475cc59a4634321c9b7acd7f214b3b362d1b5cc174ee1e3a86225668fe1d6e",
+        "ppocr_keys_v1.txt": "28b2362ad4ab2dc38769aa72feb535e3a9ddb3fd2a7585a05920e6393b1dc7f7"
+      },
+      "module_sha256": "848353c3114b79d1d77154807013ff0584553fa648a0cc86cbad23efe9cf7055",
+      "warmup_seconds": 5.0,
+      "included": [
+        "detector",
+        "all detected plate OCR",
+        "annotation",
+        "JPEG quality 80"
+      ],
+      "excluded": [
+        "initialization",
+        "warmup",
+        "input preparation",
+        "capture",
+        "decode",
+        "network"
+      ],
+      "capacity": {
+        "backend": "rknn",
+        "target_fps_per_stream": 30,
+        "maximum_measured_aggregate_fps": 34.25,
+        "best_tested_concurrency": 12,
+        "largest_tested_stream_count_meeting_target": 0,
+        "note": "Aggregate FPS / target is a fractional processing budget, not verified real-time streams; only tested per-stream rates verify the target. ONNX results do not establish NPU capacity."
+      },
+      "errors": [],
+      "measurement_name": "rk3588-capacity-plates-9-12",
+      "configurations": [
+        {
+          "stream_count": 9,
+          "measurement_seconds": 20.0,
+          "completed_frames": 663,
+          "aggregate_processing_fps": 33.15,
+          "minimum_per_stream_fps": 3.65,
+          "per_stream_fps": [
+            3.75,
+            3.7,
+            3.65,
+            3.7,
+            3.7,
+            3.65,
+            3.7,
+            3.65,
+            3.65
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 1.105,
+          "timings_ms": {
+            "annotation": {
+              "p50": 0.8052819994190941,
+              "p95": 1.361133700265782
+            },
+            "crop": {
+              "p50": 0.862,
+              "p95": 1.3019999999999996
+            },
+            "detector_inference": {
+              "p50": 116.387,
+              "p95": 133.55919999999998
+            },
+            "detector_postprocess": {
+              "p50": 5.339,
+              "p95": 12.5473
+            },
+            "detector_preprocess": {
+              "p50": 1.518,
+              "p95": 3.144599999999999
+            },
+            "jpeg": {
+              "p50": 9.998210000048857,
+              "p95": 19.233316900044883
+            },
+            "pipeline_total": {
+              "p50": 257.215,
+              "p95": 284.20149999999995
+            },
+            "pipeline_wall": {
+              "p50": 257.27345800078183,
+              "p95": 284.22396020014276
+            },
+            "processing_total": {
+              "p50": 269.3530180004018,
+              "p95": 295.3583356998024
+            },
+            "recognition_inference": {
+              "p50": 128.294,
+              "p95": 149.177
+            },
+            "recognition_postprocess": {
+              "p50": 2.206,
+              "p95": 3.4126
+            },
+            "recognition_preprocess": {
+              "p50": 0.334,
+              "p95": 0.6802999999999999
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": false,
+            "error": "FileNotFoundError: [Errno 2] No such file or directory: '/sys/kernel/debug/rknpu/load'",
+            "cores": {}
+          },
+          "workers_requiring_forced_cleanup": [],
+          "worker_plate_count_distributions": [
+            {
+              "2": 75
+            },
+            {
+              "2": 74
+            },
+            {
+              "2": 73
+            },
+            {
+              "2": 74
+            },
+            {
+              "2": 74
+            },
+            {
+              "2": 73
+            },
+            {
+              "2": 74
+            },
+            {
+              "2": 73
+            },
+            {
+              "2": 73
+            }
+          ]
+        },
+        {
+          "stream_count": 12,
+          "measurement_seconds": 20.0,
+          "completed_frames": 685,
+          "aggregate_processing_fps": 34.25,
+          "minimum_per_stream_fps": 2.8,
+          "per_stream_fps": [
+            2.85,
+            2.85,
+            2.85,
+            2.9,
+            2.85,
+            2.8,
+            2.9,
+            2.8,
+            2.85,
+            2.95,
+            2.85,
+            2.8
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 1.1416666666666666,
+          "timings_ms": {
+            "annotation": {
+              "p50": 0.8312399995702435,
+              "p95": 1.4581402003386756
+            },
+            "crop": {
+              "p50": 0.854,
+              "p95": 1.3289999999999997
+            },
+            "detector_inference": {
+              "p50": 145.827,
+              "p95": 164.53379999999996
+            },
+            "detector_postprocess": {
+              "p50": 5.415,
+              "p95": 12.51
+            },
+            "detector_preprocess": {
+              "p50": 1.624,
+              "p95": 3.4276
+            },
+            "jpeg": {
+              "p50": 9.393009999257629,
+              "p95": 17.958570200244132
+            },
+            "pipeline_total": {
+              "p50": 335.816,
+              "p95": 364.964
+            },
+            "pipeline_wall": {
+              "p50": 335.84645300015836,
+              "p95": 364.99495259995456
+            },
+            "processing_total": {
+              "p50": 347.47264300040115,
+              "p95": 376.0584666000795
+            },
+            "recognition_inference": {
+              "p50": 178.115,
+              "p95": 202.55379999999997
+            },
+            "recognition_postprocess": {
+              "p50": 2.105,
+              "p95": 4.076799999999994
+            },
+            "recognition_preprocess": {
+              "p50": 0.323,
+              "p95": 0.679
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": false,
+            "error": "FileNotFoundError: [Errno 2] No such file or directory: '/sys/kernel/debug/rknpu/load'",
+            "cores": {}
+          },
+          "workers_requiring_forced_cleanup": [],
+          "worker_plate_count_distributions": [
+            {
+              "2": 57
+            },
+            {
+              "2": 57
+            },
+            {
+              "2": 57
+            },
+            {
+              "2": 58
+            },
+            {
+              "2": 57
+            },
+            {
+              "2": 56
+            },
+            {
+              "2": 58
+            },
+            {
+              "2": 56
+            },
+            {
+              "2": 57
+            },
+            {
+              "2": 59
+            },
+            {
+              "2": 57
+            },
+            {
+              "2": 56
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "backend": "rknn",
+      "model_precision": "FP16 RKNN, unquantized",
+      "workload": "plates",
+      "expected_plates_per_frame": 2,
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frame_sha256": "9679bbcdedb5acff799be8d5a3a6e31218a37cd8f25667ba54602d1aed36b2e1",
+      "platform": "Linux-6.1.115-aarch64-with-glibc2.36",
+      "opencv_version": "4.10.0",
+      "opencv_threads_requested": 2,
+      "cpu_cores_requested": "all",
+      "cpu_cores_selected": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "model_sha256": {
+        "plate_detector": "4faa83a8c55290d7185c7d369784147d53ad6bce04baeaa9e85c0a3995bc7b23",
+        "plate_recognizer": "092ee63ff7e784981959d6f8df1fd1f35b9fefbc4fcaeb7d867047a162078efd"
+      },
+      "model_asset_sha256": {
+        "model_metadata.json": "6f475cc59a4634321c9b7acd7f214b3b362d1b5cc174ee1e3a86225668fe1d6e",
+        "ppocr_keys_v1.txt": "28b2362ad4ab2dc38769aa72feb535e3a9ddb3fd2a7585a05920e6393b1dc7f7"
+      },
+      "module_sha256": "848353c3114b79d1d77154807013ff0584553fa648a0cc86cbad23efe9cf7055",
+      "warmup_seconds": 5.0,
+      "included": [
+        "detector",
+        "all detected plate OCR",
+        "annotation",
+        "JPEG quality 80"
+      ],
+      "excluded": [
+        "initialization",
+        "warmup",
+        "input preparation",
+        "capture",
+        "decode",
+        "network"
+      ],
+      "capacity": {
+        "backend": "rknn",
+        "target_fps_per_stream": 30,
+        "maximum_measured_aggregate_fps": 36.699999999999996,
+        "best_tested_concurrency": 12,
+        "largest_tested_stream_count_meeting_target": 0,
+        "note": "Aggregate FPS / target is a fractional processing budget, not verified real-time streams; only tested per-stream rates verify the target. ONNX results do not establish NPU capacity."
+      },
+      "errors": [],
+      "measurement_name": "rk3588-capacity-plates-all-cpus",
+      "configurations": [
+        {
+          "stream_count": 12,
+          "measurement_seconds": 20.0,
+          "completed_frames": 734,
+          "aggregate_processing_fps": 36.699999999999996,
+          "minimum_per_stream_fps": 3.0,
+          "per_stream_fps": [
+            3.1,
+            3.05,
+            3.05,
+            3.15,
+            3.0,
+            3.05,
+            3.0,
+            3.0,
+            3.05,
+            3.15,
+            3.05,
+            3.05
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 1.2233333333333332,
+          "timings_ms": {
+            "annotation": {
+              "p50": 1.3664415000675945,
+              "p95": 2.173969699697409
+            },
+            "crop": {
+              "p50": 1.422,
+              "p95": 2.0044000000000004
+            },
+            "detector_inference": {
+              "p50": 133.0655,
+              "p95": 157.58755
+            },
+            "detector_postprocess": {
+              "p50": 12.5545,
+              "p95": 16.4787
+            },
+            "detector_preprocess": {
+              "p50": 3.097,
+              "p95": 7.020000000000001
+            },
+            "jpeg": {
+              "p50": 17.180810999889218,
+              "p95": 22.94946769998205
+            },
+            "pipeline_total": {
+              "p50": 307.86699999999996,
+              "p95": 341.18795
+            },
+            "pipeline_wall": {
+              "p50": 307.97351049977806,
+              "p95": 341.2354132496148
+            },
+            "processing_total": {
+              "p50": 324.5871835001708,
+              "p95": 361.4146850501129
+            },
+            "recognition_inference": {
+              "p50": 155.6635,
+              "p95": 177.6591
+            },
+            "recognition_postprocess": {
+              "p50": 3.7190000000000003,
+              "p95": 5.697
+            },
+            "recognition_preprocess": {
+              "p50": 0.5854999999999999,
+              "p95": 0.9144000000000001
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": true,
+            "cores": {
+              "0": {
+                "mean": 92.78378378378379,
+                "min": 88.0,
+                "max": 95.0,
+                "sample_count": 37
+              },
+              "1": {
+                "mean": 92.72972972972973,
+                "min": 87.0,
+                "max": 96.0,
+                "sample_count": 37
+              },
+              "2": {
+                "mean": 92.56756756756756,
+                "min": 77.0,
+                "max": 96.0,
+                "sample_count": 37
+              }
+            },
+            "source": "host telemetry, measurement window"
+          },
+          "workers_requiring_forced_cleanup": [],
+          "hardware_observations": {
+            "scope": "measurement window",
+            "sample_count": 37,
+            "npu_frequency_hz": {
+              "/sys/class/devfreq/fdab0000.npu/cur_freq": {
+                "mean": 1000000000.0,
+                "min": 1000000000,
+                "max": 1000000000,
+                "sample_count": 37
+              }
+            },
+            "temperature_c": {
+              "/sys/class/thermal/thermal_zone0:soc-thermal": {
+                "mean": 54.26359459459459,
+                "min": 52.692,
+                "max": 55.461,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone1:bigcore0-thermal": {
+                "mean": 54.38832432432432,
+                "min": 52.692,
+                "max": 56.384,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone2:bigcore1-thermal": {
+                "mean": 54.56294594594594,
+                "min": 52.692,
+                "max": 56.384,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone3:littlecore-thermal": {
+                "mean": 54.63778378378378,
+                "min": 53.615,
+                "max": 55.461,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone4:center-thermal": {
+                "mean": 53.36554054054054,
+                "min": 52.692,
+                "max": 54.538,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone5:gpu-thermal": {
+                "mean": 52.49243243243243,
+                "min": 51.769,
+                "max": 53.615,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone6:npu-thermal": {
+                "mean": 53.49027027027027,
+                "min": 52.692,
+                "max": 54.538,
+                "sample_count": 37
+              }
+            },
+            "cpu_busy_percent": {
+              "cpu": {
+                "mean": 42.53081824459139,
+                "min": 37.59398496240601,
+                "max": 47.04433497536946,
+                "sample_count": 36
+              },
+              "cpu0": {
+                "mean": 51.34133307177171,
+                "min": 34.09090909090909,
+                "max": 64.0,
+                "sample_count": 36
+              },
+              "cpu1": {
+                "mean": 44.26778312407944,
+                "min": 24.0,
+                "max": 62.745098039215684,
+                "sample_count": 36
+              },
+              "cpu2": {
+                "mean": 44.035241353793936,
+                "min": 31.999999999999996,
+                "max": 59.25925925925925,
+                "sample_count": 36
+              },
+              "cpu3": {
+                "mean": 43.517096755936315,
+                "min": 30.76923076923077,
+                "max": 56.60377358490566,
+                "sample_count": 36
+              },
+              "cpu4": {
+                "mean": 40.826557217082296,
+                "min": 27.450980392156865,
+                "max": 60.37735849056604,
+                "sample_count": 36
+              },
+              "cpu5": {
+                "mean": 38.69482043386259,
+                "min": 26.530612244897956,
+                "max": 57.407407407407405,
+                "sample_count": 36
+              },
+              "cpu6": {
+                "mean": 39.61916333468665,
+                "min": 26.923076923076927,
+                "max": 50.943396226415096,
+                "sample_count": 36
+              },
+              "cpu7": {
+                "mean": 38.01117779486501,
+                "min": 26.415094339622648,
+                "max": 48.14814814814815,
+                "sample_count": 36
+              }
+            }
+          },
+          "worker_plate_count_distributions": [
+            {
+              "2": 62
+            },
+            {
+              "2": 61
+            },
+            {
+              "2": 61
+            },
+            {
+              "2": 63
+            },
+            {
+              "2": 60
+            },
+            {
+              "2": 61
+            },
+            {
+              "2": 60
+            },
+            {
+              "2": 60
+            },
+            {
+              "2": 61
+            },
+            {
+              "2": 63
+            },
+            {
+              "2": 61
+            },
+            {
+              "2": 61
+            }
+          ]
+        },
+        {
+          "stream_count": 18,
+          "measurement_seconds": 20.0,
+          "completed_frames": 730,
+          "aggregate_processing_fps": 36.5,
+          "minimum_per_stream_fps": 2.0,
+          "per_stream_fps": [
+            2.05,
+            2.0,
+            2.0,
+            2.05,
+            2.0,
+            2.0,
+            2.05,
+            2.05,
+            2.05,
+            2.05,
+            2.0,
+            2.0,
+            2.05,
+            2.0,
+            2.05,
+            2.1,
+            2.0,
+            2.0
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 1.2166666666666666,
+          "timings_ms": {
+            "annotation": {
+              "p50": 1.3279424997563183,
+              "p95": 2.7127447496695822
+            },
+            "crop": {
+              "p50": 1.3735,
+              "p95": 2.1653
+            },
+            "detector_inference": {
+              "p50": 201.4375,
+              "p95": 232.39939999999999
+            },
+            "detector_postprocess": {
+              "p50": 12.3515,
+              "p95": 17.8655
+            },
+            "detector_preprocess": {
+              "p50": 3.1985,
+              "p95": 8.4322
+            },
+            "jpeg": {
+              "p50": 14.128976999927545,
+              "p95": 25.070317049630823
+            },
+            "pipeline_total": {
+              "p50": 470.867,
+              "p95": 504.46254999999996
+            },
+            "pipeline_wall": {
+              "p50": 470.94235199983814,
+              "p95": 504.8471655505182
+            },
+            "processing_total": {
+              "p50": 486.8168705002063,
+              "p95": 522.8977995499008
+            },
+            "recognition_inference": {
+              "p50": 248.68099999999998,
+              "p95": 277.2272
+            },
+            "recognition_postprocess": {
+              "p50": 3.68,
+              "p95": 6.29185
+            },
+            "recognition_preprocess": {
+              "p50": 0.567,
+              "p95": 0.887
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": true,
+            "cores": {
+              "0": {
+                "mean": 92.70270270270271,
+                "min": 85.0,
+                "max": 96.0,
+                "sample_count": 37
+              },
+              "1": {
+                "mean": 92.86486486486487,
+                "min": 82.0,
+                "max": 96.0,
+                "sample_count": 37
+              },
+              "2": {
+                "mean": 92.94594594594595,
+                "min": 81.0,
+                "max": 96.0,
+                "sample_count": 37
+              }
+            },
+            "source": "host telemetry, measurement window"
+          },
+          "workers_requiring_forced_cleanup": [],
+          "hardware_observations": {
+            "scope": "measurement window",
+            "sample_count": 37,
+            "npu_frequency_hz": {
+              "/sys/class/devfreq/fdab0000.npu/cur_freq": {
+                "mean": 1000000000.0,
+                "min": 1000000000,
+                "max": 1000000000,
+                "sample_count": 37
+              }
+            },
+            "temperature_c": {
+              "/sys/class/thermal/thermal_zone0:soc-thermal": {
+                "mean": 56.0597027027027,
+                "min": 55.461,
+                "max": 57.307,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone1:bigcore0-thermal": {
+                "mean": 56.259270270270264,
+                "min": 54.538,
+                "max": 57.307,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone2:bigcore1-thermal": {
+                "mean": 56.259270270270264,
+                "min": 54.538,
+                "max": 58.23,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone3:littlecore-thermal": {
+                "mean": 56.259270270270264,
+                "min": 54.538,
+                "max": 57.307,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone4:center-thermal": {
+                "mean": 55.03691891891892,
+                "min": 54.538,
+                "max": 55.461,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone5:gpu-thermal": {
+                "mean": 54.2137027027027,
+                "min": 53.615,
+                "max": 54.538,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone6:npu-thermal": {
+                "mean": 55.111756756756755,
+                "min": 54.538,
+                "max": 55.461,
+                "sample_count": 37
+              }
+            },
+            "cpu_busy_percent": {
+              "cpu": {
+                "mean": 44.97709156377904,
+                "min": 39.69465648854962,
+                "max": 50.24271844660194,
+                "sample_count": 36
+              },
+              "cpu0": {
+                "mean": 52.08994565218062,
+                "min": 37.2093023255814,
+                "max": 69.38775510204081,
+                "sample_count": 36
+              },
+              "cpu1": {
+                "mean": 46.46415976942024,
+                "min": 32.6530612244898,
+                "max": 58.92857142857143,
+                "sample_count": 36
+              },
+              "cpu2": {
+                "mean": 45.88323336140135,
+                "min": 33.333333333333336,
+                "max": 65.38461538461539,
+                "sample_count": 36
+              },
+              "cpu3": {
+                "mean": 46.50676011267418,
+                "min": 33.333333333333336,
+                "max": 70.9090909090909,
+                "sample_count": 36
+              },
+              "cpu4": {
+                "mean": 42.20721828093363,
+                "min": 32.608695652173914,
+                "max": 56.60377358490566,
+                "sample_count": 36
+              },
+              "cpu5": {
+                "mean": 42.591741336124144,
+                "min": 31.372549019607842,
+                "max": 52.94117647058824,
+                "sample_count": 36
+              },
+              "cpu6": {
+                "mean": 42.600338318660555,
+                "min": 29.411764705882348,
+                "max": 53.84615384615385,
+                "sample_count": 36
+              },
+              "cpu7": {
+                "mean": 41.59134235571079,
+                "min": 33.9622641509434,
+                "max": 58.490566037735846,
+                "sample_count": 36
+              }
+            }
+          },
+          "worker_plate_count_distributions": [
+            {
+              "2": 41
+            },
+            {
+              "2": 40
+            },
+            {
+              "2": 40
+            },
+            {
+              "2": 41
+            },
+            {
+              "2": 40
+            },
+            {
+              "2": 40
+            },
+            {
+              "2": 41
+            },
+            {
+              "2": 41
+            },
+            {
+              "2": 41
+            },
+            {
+              "2": 41
+            },
+            {
+              "2": 40
+            },
+            {
+              "2": 40
+            },
+            {
+              "2": 41
+            },
+            {
+              "2": 40
+            },
+            {
+              "2": 41
+            },
+            {
+              "2": 42
+            },
+            {
+              "2": 40
+            },
+            {
+              "2": 40
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "backend": "rknn",
+      "model_precision": "FP16 RKNN, unquantized",
+      "workload": "plates",
+      "expected_plates_per_frame": 2,
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frame_sha256": "9679bbcdedb5acff799be8d5a3a6e31218a37cd8f25667ba54602d1aed36b2e1",
+      "platform": "Linux-6.1.115-aarch64-with-glibc2.36",
+      "opencv_version": "4.10.0",
+      "opencv_threads_requested": 1,
+      "cpu_cores_requested": "all",
+      "cpu_cores_selected": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "model_sha256": {
+        "plate_detector": "4faa83a8c55290d7185c7d369784147d53ad6bce04baeaa9e85c0a3995bc7b23",
+        "plate_recognizer": "092ee63ff7e784981959d6f8df1fd1f35b9fefbc4fcaeb7d867047a162078efd"
+      },
+      "model_asset_sha256": {
+        "model_metadata.json": "6f475cc59a4634321c9b7acd7f214b3b362d1b5cc174ee1e3a86225668fe1d6e",
+        "ppocr_keys_v1.txt": "28b2362ad4ab2dc38769aa72feb535e3a9ddb3fd2a7585a05920e6393b1dc7f7"
+      },
+      "module_sha256": "848353c3114b79d1d77154807013ff0584553fa648a0cc86cbad23efe9cf7055",
+      "warmup_seconds": 5.0,
+      "included": [
+        "detector",
+        "all detected plate OCR",
+        "annotation",
+        "JPEG quality 80"
+      ],
+      "excluded": [
+        "initialization",
+        "warmup",
+        "input preparation",
+        "capture",
+        "decode",
+        "network"
+      ],
+      "capacity": {
+        "backend": "rknn",
+        "target_fps_per_stream": 30,
+        "maximum_measured_aggregate_fps": 37.0,
+        "best_tested_concurrency": 12,
+        "largest_tested_stream_count_meeting_target": 0,
+        "note": "Aggregate FPS / target is a fractional processing budget, not verified real-time streams; only tested per-stream rates verify the target. ONNX results do not establish NPU capacity."
+      },
+      "errors": [],
+      "measurement_name": "rk3588-capacity-plates-final-sweep",
+      "configurations": [
+        {
+          "stream_count": 12,
+          "measurement_seconds": 20.0,
+          "completed_frames": 740,
+          "aggregate_processing_fps": 37.0,
+          "minimum_per_stream_fps": 3.0,
+          "per_stream_fps": [
+            3.25,
+            3.1,
+            3.05,
+            3.1,
+            3.0,
+            3.1,
+            3.2,
+            3.05,
+            3.0,
+            3.15,
+            3.0,
+            3.0
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 1.2333333333333334,
+          "timings_ms": {
+            "annotation": {
+              "p50": 1.3921089998802927,
+              "p95": 2.199680600324427
+            },
+            "crop": {
+              "p50": 1.3784999999999998,
+              "p95": 2.004749999999999
+            },
+            "detector_inference": {
+              "p50": 129.5865,
+              "p95": 158.43994999999998
+            },
+            "detector_postprocess": {
+              "p50": 12.440999999999999,
+              "p95": 16.20465
+            },
+            "detector_preprocess": {
+              "p50": 2.616,
+              "p95": 11.294299999999998
+            },
+            "jpeg": {
+              "p50": 17.305215500073245,
+              "p95": 22.68007394995948
+            },
+            "pipeline_total": {
+              "p50": 307.47249999999997,
+              "p95": 341.65195
+            },
+            "pipeline_wall": {
+              "p50": 307.626184000128,
+              "p95": 341.73799994955516
+            },
+            "processing_total": {
+              "p50": 323.3667819999937,
+              "p95": 360.13751070031503
+            },
+            "recognition_inference": {
+              "p50": 154.9095,
+              "p95": 174.04389999999998
+            },
+            "recognition_postprocess": {
+              "p50": 3.662,
+              "p95": 5.42735
+            },
+            "recognition_preprocess": {
+              "p50": 0.572,
+              "p95": 0.88105
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": true,
+            "cores": {
+              "0": {
+                "mean": 94.27027027027027,
+                "min": 84.0,
+                "max": 97.0,
+                "sample_count": 37
+              },
+              "1": {
+                "mean": 92.21621621621621,
+                "min": 79.0,
+                "max": 96.0,
+                "sample_count": 37
+              },
+              "2": {
+                "mean": 92.35135135135135,
+                "min": 78.0,
+                "max": 96.0,
+                "sample_count": 37
+              }
+            },
+            "source": "host telemetry, measurement window"
+          },
+          "workers_requiring_forced_cleanup": [],
+          "hardware_observations": {
+            "scope": "measurement window",
+            "sample_count": 37,
+            "npu_frequency_hz": {
+              "/sys/class/devfreq/fdab0000.npu/cur_freq": {
+                "mean": 1000000000.0,
+                "min": 1000000000,
+                "max": 1000000000,
+                "sample_count": 37
+              }
+            },
+            "temperature_c": {
+              "/sys/class/thermal/thermal_zone0:soc-thermal": {
+                "mean": 53.739729729729724,
+                "min": 52.692,
+                "max": 54.538,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone1:bigcore0-thermal": {
+                "mean": 53.83951351351351,
+                "min": 51.769,
+                "max": 55.461,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone2:bigcore1-thermal": {
+                "mean": 53.889405405405405,
+                "min": 52.692,
+                "max": 54.538,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone3:littlecore-thermal": {
+                "mean": 53.864459459459454,
+                "min": 51.769,
+                "max": 54.538,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone4:center-thermal": {
+                "mean": 52.94145945945946,
+                "min": 51.769,
+                "max": 53.615,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone5:gpu-thermal": {
+                "mean": 52.06835135135135,
+                "min": 50.846,
+                "max": 52.692,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone6:npu-thermal": {
+                "mean": 52.94145945945946,
+                "min": 51.769,
+                "max": 53.615,
+                "sample_count": 37
+              }
+            },
+            "cpu_busy_percent": {
+              "cpu": {
+                "mean": 41.30193973808505,
+                "min": 37.86407766990292,
+                "max": 45.497630331753555,
+                "sample_count": 36
+              },
+              "cpu0": {
+                "mean": 46.36555026066404,
+                "min": 25.0,
+                "max": 65.3061224489796,
+                "sample_count": 36
+              },
+              "cpu1": {
+                "mean": 42.3627254789852,
+                "min": 26.923076923076927,
+                "max": 61.81818181818181,
+                "sample_count": 36
+              },
+              "cpu2": {
+                "mean": 42.14597732417439,
+                "min": 30.000000000000004,
+                "max": 56.86274509803921,
+                "sample_count": 36
+              },
+              "cpu3": {
+                "mean": 43.541470617844496,
+                "min": 27.450980392156865,
+                "max": 59.64912280701755,
+                "sample_count": 36
+              },
+              "cpu4": {
+                "mean": 41.05426546566461,
+                "min": 30.612244897959183,
+                "max": 54.71698113207547,
+                "sample_count": 36
+              },
+              "cpu5": {
+                "mean": 39.72571732737245,
+                "min": 30.000000000000004,
+                "max": 51.92307692307692,
+                "sample_count": 36
+              },
+              "cpu6": {
+                "mean": 38.2408083574072,
+                "min": 28.000000000000004,
+                "max": 49.056603773584904,
+                "sample_count": 36
+              },
+              "cpu7": {
+                "mean": 36.682085110982456,
+                "min": 24.0,
+                "max": 50.98039215686274,
+                "sample_count": 36
+              }
+            }
+          },
+          "worker_plate_count_distributions": [
+            {
+              "2": 65
+            },
+            {
+              "2": 62
+            },
+            {
+              "2": 61
+            },
+            {
+              "2": 62
+            },
+            {
+              "2": 60
+            },
+            {
+              "2": 62
+            },
+            {
+              "2": 64
+            },
+            {
+              "2": 61
+            },
+            {
+              "2": 60
+            },
+            {
+              "2": 63
+            },
+            {
+              "2": 60
+            },
+            {
+              "2": 60
+            }
+          ]
+        },
+        {
+          "stream_count": 24,
+          "measurement_seconds": 20.0,
+          "completed_frames": 724,
+          "aggregate_processing_fps": 36.2,
+          "minimum_per_stream_fps": 1.5,
+          "per_stream_fps": [
+            1.55,
+            1.5,
+            1.5,
+            1.55,
+            1.5,
+            1.5,
+            1.55,
+            1.5,
+            1.5,
+            1.55,
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 1.2066666666666668,
+          "timings_ms": {
+            "annotation": {
+              "p50": 1.3528800000131014,
+              "p95": 2.8894500500882723
+            },
+            "crop": {
+              "p50": 1.3185,
+              "p95": 2.2313500000000004
+            },
+            "detector_inference": {
+              "p50": 272.597,
+              "p95": 302.26805
+            },
+            "detector_postprocess": {
+              "p50": 11.472999999999999,
+              "p95": 18.876950000000004
+            },
+            "detector_preprocess": {
+              "p50": 2.753,
+              "p95": 11.5115
+            },
+            "jpeg": {
+              "p50": 14.174982500207989,
+              "p95": 27.159949849874472
+            },
+            "pipeline_total": {
+              "p50": 636.9090000000001,
+              "p95": 676.95855
+            },
+            "pipeline_wall": {
+              "p50": 636.9420809996882,
+              "p95": 677.0514130995707
+            },
+            "processing_total": {
+              "p50": 654.0924670002823,
+              "p95": 696.0405527004241
+            },
+            "recognition_inference": {
+              "p50": 344.3685,
+              "p95": 382.94960000000003
+            },
+            "recognition_postprocess": {
+              "p50": 3.6215,
+              "p95": 6.86645
+            },
+            "recognition_preprocess": {
+              "p50": 0.549,
+              "p95": 0.8922500000000001
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": true,
+            "cores": {
+              "0": {
+                "mean": 92.91891891891892,
+                "min": 85.0,
+                "max": 94.0,
+                "sample_count": 37
+              },
+              "1": {
+                "mean": 93.16216216216216,
+                "min": 89.0,
+                "max": 94.0,
+                "sample_count": 37
+              },
+              "2": {
+                "mean": 92.37837837837837,
+                "min": 83.0,
+                "max": 94.0,
+                "sample_count": 37
+              }
+            },
+            "source": "host telemetry, measurement window"
+          },
+          "workers_requiring_forced_cleanup": [],
+          "hardware_observations": {
+            "scope": "measurement window",
+            "sample_count": 37,
+            "npu_frequency_hz": {
+              "/sys/class/devfreq/fdab0000.npu/cur_freq": {
+                "mean": 1000000000.0,
+                "min": 1000000000,
+                "max": 1000000000,
+                "sample_count": 37
+              }
+            },
+            "temperature_c": {
+              "/sys/class/thermal/thermal_zone0:soc-thermal": {
+                "mean": 55.760351351351346,
+                "min": 54.538,
+                "max": 56.384,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone1:bigcore0-thermal": {
+                "mean": 55.810243243243235,
+                "min": 54.538,
+                "max": 57.307,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone2:bigcore1-thermal": {
+                "mean": 55.98486486486487,
+                "min": 55.461,
+                "max": 58.23,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone3:littlecore-thermal": {
+                "mean": 55.93497297297297,
+                "min": 54.538,
+                "max": 57.307,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone4:center-thermal": {
+                "mean": 54.73756756756757,
+                "min": 53.615,
+                "max": 55.461,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone5:gpu-thermal": {
+                "mean": 53.889405405405405,
+                "min": 52.692,
+                "max": 54.538,
+                "sample_count": 37
+              },
+              "/sys/class/thermal/thermal_zone6:npu-thermal": {
+                "mean": 54.787459459459456,
+                "min": 53.615,
+                "max": 55.461,
+                "sample_count": 37
+              }
+            },
+            "cpu_busy_percent": {
+              "cpu": {
+                "mean": 47.001187055527396,
+                "min": 38.67684478371501,
+                "max": 53.59801488833747,
+                "sample_count": 36
+              },
+              "cpu0": {
+                "mean": 51.48327010600553,
+                "min": 19.444444444444443,
+                "max": 68.08510638297872,
+                "sample_count": 36
+              },
+              "cpu1": {
+                "mean": 47.35878612182388,
+                "min": 24.489795918367353,
+                "max": 61.81818181818181,
+                "sample_count": 36
+              },
+              "cpu2": {
+                "mean": 49.25413812699282,
+                "min": 29.411764705882348,
+                "max": 62.96296296296296,
+                "sample_count": 36
+              },
+              "cpu3": {
+                "mean": 49.29935711024338,
+                "min": 32.6530612244898,
+                "max": 64.0,
+                "sample_count": 36
+              },
+              "cpu4": {
+                "mean": 43.036361047752706,
+                "min": 29.166666666666664,
+                "max": 52.94117647058824,
+                "sample_count": 36
+              },
+              "cpu5": {
+                "mean": 44.40578811179269,
+                "min": 32.6530612244898,
+                "max": 54.90196078431373,
+                "sample_count": 36
+              },
+              "cpu6": {
+                "mean": 45.28819576263554,
+                "min": 35.29411764705882,
+                "max": 55.55555555555556,
+                "sample_count": 36
+              },
+              "cpu7": {
+                "mean": 45.73865618700038,
+                "min": 32.692307692307686,
+                "max": 58.18181818181818,
+                "sample_count": 36
+              }
+            }
+          },
+          "worker_plate_count_distributions": [
+            {
+              "2": 31
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 31
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 31
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 31
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            },
+            {
+              "2": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "backend": "rknn",
+      "model_precision": "FP16 RKNN, unquantized",
+      "workload": "plates",
+      "expected_plates_per_frame": 2,
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frame_sha256": "9679bbcdedb5acff799be8d5a3a6e31218a37cd8f25667ba54602d1aed36b2e1",
+      "platform": "Linux-6.1.115-aarch64-with-glibc2.36",
+      "opencv_version": "4.10.0",
+      "opencv_threads_requested": 2,
+      "cpu_cores_requested": "auto",
+      "cpu_cores_selected": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "model_sha256": {
+        "plate_detector": "4faa83a8c55290d7185c7d369784147d53ad6bce04baeaa9e85c0a3995bc7b23",
+        "plate_recognizer": "092ee63ff7e784981959d6f8df1fd1f35b9fefbc4fcaeb7d867047a162078efd"
+      },
+      "model_asset_sha256": {
+        "model_metadata.json": "6f475cc59a4634321c9b7acd7f214b3b362d1b5cc174ee1e3a86225668fe1d6e",
+        "ppocr_keys_v1.txt": "28b2362ad4ab2dc38769aa72feb535e3a9ddb3fd2a7585a05920e6393b1dc7f7"
+      },
+      "module_sha256": "848353c3114b79d1d77154807013ff0584553fa648a0cc86cbad23efe9cf7055",
+      "warmup_seconds": 5.0,
+      "included": [
+        "detector",
+        "all detected plate OCR",
+        "annotation",
+        "JPEG quality 80"
+      ],
+      "excluded": [
+        "initialization",
+        "warmup",
+        "input preparation",
+        "capture",
+        "decode",
+        "network"
+      ],
+      "capacity": {
+        "backend": "rknn",
+        "target_fps_per_stream": 30,
+        "maximum_measured_aggregate_fps": 34.75,
+        "best_tested_concurrency": 18,
+        "largest_tested_stream_count_meeting_target": 0,
+        "note": "Aggregate FPS / target is a fractional processing budget, not verified real-time streams; only tested per-stream rates verify the target. ONNX results do not establish NPU capacity."
+      },
+      "errors": [],
+      "measurement_name": "rk3588-capacity-plates-saturation",
+      "configurations": [
+        {
+          "stream_count": 12,
+          "measurement_seconds": 20.0,
+          "completed_frames": 688,
+          "aggregate_processing_fps": 34.400000000000006,
+          "minimum_per_stream_fps": 2.8,
+          "per_stream_fps": [
+            2.95,
+            2.85,
+            2.8,
+            2.9,
+            2.9,
+            2.8,
+            2.9,
+            2.85,
+            2.85,
+            2.9,
+            2.85,
+            2.85
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 1.146666666666667,
+          "timings_ms": {
+            "annotation": {
+              "p50": 0.819427999886102,
+              "p95": 1.4664101997823307
+            },
+            "crop": {
+              "p50": 0.8605,
+              "p95": 1.36665
+            },
+            "detector_inference": {
+              "p50": 145.24349999999998,
+              "p95": 172.2679
+            },
+            "detector_postprocess": {
+              "p50": 5.5009999999999994,
+              "p95": 12.848650000000001
+            },
+            "detector_preprocess": {
+              "p50": 1.641,
+              "p95": 3.3032999999999997
+            },
+            "jpeg": {
+              "p50": 9.431221500108222,
+              "p95": 19.066707999900242
+            },
+            "pipeline_total": {
+              "p50": 334.477,
+              "p95": 366.17925
+            },
+            "pipeline_wall": {
+              "p50": 334.55633150015274,
+              "p95": 366.29659345039727
+            },
+            "processing_total": {
+              "p50": 345.70788650034956,
+              "p95": 379.8496736999823
+            },
+            "recognition_inference": {
+              "p50": 174.588,
+              "p95": 201.86
+            },
+            "recognition_postprocess": {
+              "p50": 2.1100000000000003,
+              "p95": 3.534399999999999
+            },
+            "recognition_preprocess": {
+              "p50": 0.33,
+              "p95": 0.6733
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": true,
+            "cores": {
+              "0": {
+                "mean": 87.58333333333333,
+                "min": 68.0,
+                "max": 92.0,
+                "sample_count": 36
+              },
+              "1": {
+                "mean": 87.05555555555556,
+                "min": 70.0,
+                "max": 93.0,
+                "sample_count": 36
+              },
+              "2": {
+                "mean": 87.33333333333333,
+                "min": 75.0,
+                "max": 93.0,
+                "sample_count": 36
+              }
+            },
+            "source": "host telemetry, measurement window"
+          },
+          "workers_requiring_forced_cleanup": [],
+          "hardware_observations": {
+            "scope": "measurement window",
+            "sample_count": 36,
+            "npu_frequency_hz": {
+              "/sys/class/devfreq/fdab0000.npu/cur_freq": {
+                "mean": 1000000000.0,
+                "min": 1000000000,
+                "max": 1000000000,
+                "sample_count": 36
+              }
+            },
+            "temperature_c": {
+              "/sys/class/thermal/thermal_zone0:soc-thermal": {
+                "mean": 51.56388888888889,
+                "min": 49.0,
+                "max": 52.692,
+                "sample_count": 36
+              },
+              "/sys/class/thermal/thermal_zone1:bigcore0-thermal": {
+                "mean": 52.33305555555555,
+                "min": 50.846,
+                "max": 54.538,
+                "sample_count": 36
+              },
+              "/sys/class/thermal/thermal_zone2:bigcore1-thermal": {
+                "mean": 52.48688888888889,
+                "min": 50.846,
+                "max": 54.538,
+                "sample_count": 36
+              },
+              "/sys/class/thermal/thermal_zone3:littlecore-thermal": {
+                "mean": 51.820277777777775,
+                "min": 49.923,
+                "max": 52.692,
+                "sample_count": 36
+              },
+              "/sys/class/thermal/thermal_zone4:center-thermal": {
+                "mean": 51.128027777777774,
+                "min": 49.0,
+                "max": 51.769,
+                "sample_count": 36
+              },
+              "/sys/class/thermal/thermal_zone5:gpu-thermal": {
+                "mean": 50.15375,
+                "min": 49.0,
+                "max": 50.846,
+                "sample_count": 36
+              },
+              "/sys/class/thermal/thermal_zone6:npu-thermal": {
+                "mean": 50.94855555555555,
+                "min": 49.0,
+                "max": 51.769,
+                "sample_count": 36
+              }
+            },
+            "cpu_busy_percent": {
+              "cpu": {
+                "mean": 27.535893324371777,
+                "min": 24.13793103448276,
+                "max": 31.828978622327785,
+                "sample_count": 35
+              },
+              "cpu0": {
+                "mean": 4.233689320934732,
+                "min": 0.0,
+                "max": 6.976744186046513,
+                "sample_count": 35
+              },
+              "cpu1": {
+                "mean": 2.631571850751876,
+                "min": 0.0,
+                "max": 10.909090909090914,
+                "sample_count": 35
+              },
+              "cpu2": {
+                "mean": 2.442110101139751,
+                "min": 0.0,
+                "max": 5.454545454545457,
+                "sample_count": 35
+              },
+              "cpu3": {
+                "mean": 2.648974665147172,
+                "min": 0.0,
+                "max": 10.909090909090914,
+                "sample_count": 35
+              },
+              "cpu4": {
+                "mean": 52.28401283558711,
+                "min": 42.00000000000001,
+                "max": 64.15094339622642,
+                "sample_count": 35
+              },
+              "cpu5": {
+                "mean": 50.84426886469062,
+                "min": 41.666666666666664,
+                "max": 66.03773584905662,
+                "sample_count": 35
+              },
+              "cpu6": {
+                "mean": 53.232618341371655,
+                "min": 44.230769230769226,
+                "max": 64.15094339622642,
+                "sample_count": 35
+              },
+              "cpu7": {
+                "mean": 51.79658344403865,
+                "min": 42.00000000000001,
+                "max": 62.96296296296296,
+                "sample_count": 35
+              }
+            }
+          },
+          "worker_plate_count_distributions": [
+            {
+              "2": 59
+            },
+            {
+              "2": 57
+            },
+            {
+              "2": 56
+            },
+            {
+              "2": 58
+            },
+            {
+              "2": 58
+            },
+            {
+              "2": 56
+            },
+            {
+              "2": 58
+            },
+            {
+              "2": 57
+            },
+            {
+              "2": 57
+            },
+            {
+              "2": 58
+            },
+            {
+              "2": 57
+            },
+            {
+              "2": 57
+            }
+          ]
+        },
+        {
+          "stream_count": 18,
+          "measurement_seconds": 20.0,
+          "completed_frames": 695,
+          "aggregate_processing_fps": 34.75,
+          "minimum_per_stream_fps": 1.85,
+          "per_stream_fps": [
+            1.95,
+            1.9,
+            1.9,
+            1.95,
+            1.9,
+            1.9,
+            1.95,
+            1.9,
+            1.95,
+            1.95,
+            1.95,
+            1.95,
+            1.95,
+            1.95,
+            1.95,
+            1.95,
+            1.95,
+            1.85
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 1.1583333333333334,
+          "timings_ms": {
+            "annotation": {
+              "p50": 0.834157000099367,
+              "p95": 1.4897569000822821
+            },
+            "crop": {
+              "p50": 0.87,
+              "p95": 1.2683
+            },
+            "detector_inference": {
+              "p50": 210.093,
+              "p95": 240.6928
+            },
+            "detector_postprocess": {
+              "p50": 5.286,
+              "p95": 12.6805
+            },
+            "detector_preprocess": {
+              "p50": 1.673,
+              "p95": 6.195799999999993
+            },
+            "jpeg": {
+              "p50": 9.355384999253147,
+              "p95": 21.160482300092546
+            },
+            "pipeline_total": {
+              "p50": 498.091,
+              "p95": 553.8498999999999
+            },
+            "pipeline_wall": {
+              "p50": 498.12614300026326,
+              "p95": 553.8844499004881
+            },
+            "processing_total": {
+              "p50": 510.1789110003665,
+              "p95": 565.7830380003361
+            },
+            "recognition_inference": {
+              "p50": 274.209,
+              "p95": 311.4641
+            },
+            "recognition_postprocess": {
+              "p50": 2.069,
+              "p95": 3.6684999999999977
+            },
+            "recognition_preprocess": {
+              "p50": 0.318,
+              "p95": 0.6210999999999997
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": true,
+            "cores": {
+              "0": {
+                "mean": 89.13888888888889,
+                "min": 81.0,
+                "max": 93.0,
+                "sample_count": 36
+              },
+              "1": {
+                "mean": 89.66666666666667,
+                "min": 82.0,
+                "max": 93.0,
+                "sample_count": 36
+              },
+              "2": {
+                "mean": 89.05555555555556,
+                "min": 81.0,
+                "max": 93.0,
+                "sample_count": 36
+              }
+            },
+            "source": "host telemetry, measurement window"
+          },
+          "workers_requiring_forced_cleanup": [],
+          "hardware_observations": {
+            "scope": "measurement window",
+            "sample_count": 36,
+            "npu_frequency_hz": {
+              "/sys/class/devfreq/fdab0000.npu/cur_freq": {
+                "mean": 1000000000.0,
+                "min": 1000000000,
+                "max": 1000000000,
+                "sample_count": 36
+              }
+            },
+            "temperature_c": {
+              "/sys/class/thermal/thermal_zone0:soc-thermal": {
+                "mean": 53.89702777777777,
+                "min": 52.692,
+                "max": 54.538,
+                "sample_count": 36
+              },
+              "/sys/class/thermal/thermal_zone1:bigcore0-thermal": {
+                "mean": 54.589277777777774,
+                "min": 52.692,
+                "max": 56.384,
+                "sample_count": 36
+              },
+              "/sys/class/thermal/thermal_zone2:bigcore1-thermal": {
+                "mean": 54.614916666666666,
+                "min": 52.692,
+                "max": 56.384,
+                "sample_count": 36
+              },
+              "/sys/class/thermal/thermal_zone3:littlecore-thermal": {
+                "mean": 53.97394444444444,
+                "min": 52.692,
+                "max": 54.538,
+                "sample_count": 36
+              },
+              "/sys/class/thermal/thermal_zone4:center-thermal": {
+                "mean": 53.30733333333333,
+                "min": 52.692,
+                "max": 54.538,
+                "sample_count": 36
+              },
+              "/sys/class/thermal/thermal_zone5:gpu-thermal": {
+                "mean": 52.38433333333333,
+                "min": 51.769,
+                "max": 52.692,
+                "sample_count": 36
+              },
+              "/sys/class/thermal/thermal_zone6:npu-thermal": {
+                "mean": 53.102222222222224,
+                "min": 51.769,
+                "max": 53.615,
+                "sample_count": 36
+              }
+            },
+            "cpu_busy_percent": {
+              "cpu": {
+                "mean": 29.736184578536008,
+                "min": 26.289926289926292,
+                "max": 32.464454976303315,
+                "sample_count": 35
+              },
+              "cpu0": {
+                "mean": 5.087136202442905,
+                "min": 0.0,
+                "max": 13.636363636363635,
+                "sample_count": 35
+              },
+              "cpu1": {
+                "mean": 2.885041656821465,
+                "min": 0.0,
+                "max": 9.090909090909093,
+                "sample_count": 35
+              },
+              "cpu2": {
+                "mean": 2.835380297786313,
+                "min": 0.0,
+                "max": 5.454545454545457,
+                "sample_count": 35
+              },
+              "cpu3": {
+                "mean": 2.685905014107597,
+                "min": 0.0,
+                "max": 10.909090909090914,
+                "sample_count": 35
+              },
+              "cpu4": {
+                "mean": 56.89356890257985,
+                "min": 48.93617021276596,
+                "max": 65.45454545454545,
+                "sample_count": 35
+              },
+              "cpu5": {
+                "mean": 54.28717655213483,
+                "min": 48.07692307692307,
+                "max": 63.1578947368421,
+                "sample_count": 35
+              },
+              "cpu6": {
+                "mean": 56.625092158113944,
+                "min": 47.16981132075472,
+                "max": 66.66666666666667,
+                "sample_count": 35
+              },
+              "cpu7": {
+                "mean": 54.335657822872946,
+                "min": 45.09803921568627,
+                "max": 63.63636363636363,
+                "sample_count": 35
+              }
+            }
+          },
+          "worker_plate_count_distributions": [
+            {
+              "2": 39
+            },
+            {
+              "2": 38
+            },
+            {
+              "2": 38
+            },
+            {
+              "2": 39
+            },
+            {
+              "2": 38
+            },
+            {
+              "2": 38
+            },
+            {
+              "2": 39
+            },
+            {
+              "2": 38
+            },
+            {
+              "2": 39
+            },
+            {
+              "2": 39
+            },
+            {
+              "2": 39
+            },
+            {
+              "2": 39
+            },
+            {
+              "2": 39
+            },
+            {
+              "2": 39
+            },
+            {
+              "2": 39
+            },
+            {
+              "2": 39
+            },
+            {
+              "2": 39
+            },
+            {
+              "2": 37
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "backend": "rknn",
+      "model_precision": "FP16 RKNN, unquantized",
+      "workload": "plates",
+      "expected_plates_per_frame": 2,
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frame_sha256": "9679bbcdedb5acff799be8d5a3a6e31218a37cd8f25667ba54602d1aed36b2e1",
+      "platform": "Linux-6.1.115-aarch64-with-glibc2.36",
+      "opencv_version": "4.10.0",
+      "opencv_threads_requested": 1,
+      "cpu_cores_requested": "all",
+      "cpu_cores_selected": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "model_sha256": {
+        "plate_detector": "4faa83a8c55290d7185c7d369784147d53ad6bce04baeaa9e85c0a3995bc7b23",
+        "plate_recognizer": "092ee63ff7e784981959d6f8df1fd1f35b9fefbc4fcaeb7d867047a162078efd"
+      },
+      "model_asset_sha256": {
+        "model_metadata.json": "6f475cc59a4634321c9b7acd7f214b3b362d1b5cc174ee1e3a86225668fe1d6e",
+        "ppocr_keys_v1.txt": "28b2362ad4ab2dc38769aa72feb535e3a9ddb3fd2a7585a05920e6393b1dc7f7"
+      },
+      "module_sha256": "848353c3114b79d1d77154807013ff0584553fa648a0cc86cbad23efe9cf7055",
+      "warmup_seconds": 10.0,
+      "included": [
+        "detector",
+        "all detected plate OCR",
+        "annotation",
+        "JPEG quality 80"
+      ],
+      "excluded": [
+        "initialization",
+        "warmup",
+        "input preparation",
+        "capture",
+        "decode",
+        "network"
+      ],
+      "capacity": {
+        "backend": "rknn",
+        "target_fps_per_stream": 30,
+        "maximum_measured_aggregate_fps": 37.083333333333336,
+        "best_tested_concurrency": 12,
+        "largest_tested_stream_count_meeting_target": 0,
+        "note": "Aggregate FPS / target is a fractional processing budget, not verified real-time streams; only tested per-stream rates verify the target. ONNX results do not establish NPU capacity."
+      },
+      "errors": [],
+      "measurement_name": "rk3588-capacity-plates-sustained",
+      "configurations": [
+        {
+          "stream_count": 12,
+          "measurement_seconds": 60.0,
+          "completed_frames": 2225,
+          "aggregate_processing_fps": 37.083333333333336,
+          "minimum_per_stream_fps": 3.05,
+          "per_stream_fps": [
+            3.15,
+            3.066666666666667,
+            3.0833333333333335,
+            3.1,
+            3.0833333333333335,
+            3.05,
+            3.1,
+            3.0833333333333335,
+            3.1,
+            3.1333333333333333,
+            3.0833333333333335,
+            3.05
+          ],
+          "workload_valid": true,
+          "all_streams_meet_target": false,
+          "verified_npu_streams_meet_target": false,
+          "aggregate_target_fps_equivalent": 1.2361111111111112,
+          "timings_ms": {
+            "annotation": {
+              "p50": 1.3515680002456065,
+              "p95": 2.2377569997843234
+            },
+            "crop": {
+              "p50": 1.371,
+              "p95": 2.042
+            },
+            "detector_inference": {
+              "p50": 130.779,
+              "p95": 155.74279999999996
+            },
+            "detector_postprocess": {
+              "p50": 12.622,
+              "p95": 16.570199999999996
+            },
+            "detector_preprocess": {
+              "p50": 2.662,
+              "p95": 11.05
+            },
+            "jpeg": {
+              "p50": 16.477230999953463,
+              "p95": 22.773945999870193
+            },
+            "pipeline_total": {
+              "p50": 306.645,
+              "p95": 339.7616
+            },
+            "pipeline_wall": {
+              "p50": 306.7075010003464,
+              "p95": 339.8317479997786
+            },
+            "processing_total": {
+              "p50": 322.678401000303,
+              "p95": 358.540829800404
+            },
+            "recognition_inference": {
+              "p50": 153.998,
+              "p95": 175.6782
+            },
+            "recognition_postprocess": {
+              "p50": 3.652,
+              "p95": 5.589599999999998
+            },
+            "recognition_preprocess": {
+              "p50": 0.58,
+              "p95": 0.8897999999999997
+            }
+          },
+          "hardware_npu_load_percent": {
+            "available": true,
+            "cores": {
+              "0": {
+                "mean": 93.06306306306307,
+                "min": 81.0,
+                "max": 97.0,
+                "sample_count": 111
+              },
+              "1": {
+                "mean": 93.98198198198199,
+                "min": 86.0,
+                "max": 97.0,
+                "sample_count": 111
+              },
+              "2": {
+                "mean": 93.65765765765765,
+                "min": 82.0,
+                "max": 97.0,
+                "sample_count": 111
+              }
+            },
+            "source": "host telemetry, measurement window"
+          },
+          "workers_requiring_forced_cleanup": [],
+          "hardware_observations": {
+            "scope": "measurement window",
+            "sample_count": 111,
+            "npu_frequency_hz": {
+              "/sys/class/devfreq/fdab0000.npu/cur_freq": {
+                "mean": 1000000000.0,
+                "min": 1000000000,
+                "max": 1000000000,
+                "sample_count": 111
+              }
+            },
+            "temperature_c": {
+              "/sys/class/thermal/thermal_zone0:soc-thermal": {
+                "mean": 54.92881981981982,
+                "min": 52.692,
+                "max": 56.384,
+                "sample_count": 111
+              },
+              "/sys/class/thermal/thermal_zone1:bigcore0-thermal": {
+                "mean": 55.095126126126125,
+                "min": 52.692,
+                "max": 56.384,
+                "sample_count": 111
+              },
+              "/sys/class/thermal/thermal_zone2:bigcore1-thermal": {
+                "mean": 55.21154054054054,
+                "min": 52.692,
+                "max": 56.384,
+                "sample_count": 111
+              },
+              "/sys/class/thermal/thermal_zone3:littlecore-thermal": {
+                "mean": 55.095126126126125,
+                "min": 52.692,
+                "max": 56.384,
+                "sample_count": 111
+              },
+              "/sys/class/thermal/thermal_zone4:center-thermal": {
+                "mean": 53.997504504504505,
+                "min": 52.692,
+                "max": 54.538,
+                "sample_count": 111
+              },
+              "/sys/class/thermal/thermal_zone5:gpu-thermal": {
+                "mean": 53.10776576576577,
+                "min": 51.769,
+                "max": 54.538,
+                "sample_count": 111
+              },
+              "/sys/class/thermal/thermal_zone6:npu-thermal": {
+                "mean": 53.97255855855855,
+                "min": 51.769,
+                "max": 54.538,
+                "sample_count": 111
+              }
+            },
+            "cpu_busy_percent": {
+              "cpu": {
+                "mean": 42.00033397337813,
+                "min": 36.56716417910447,
+                "max": 47.89719626168224,
+                "sample_count": 110
+              },
+              "cpu0": {
+                "mean": 51.080464408431595,
+                "min": 28.888888888888886,
+                "max": 70.58823529411764,
+                "sample_count": 110
+              },
+              "cpu1": {
+                "mean": 43.525817248763616,
+                "min": 23.076923076923073,
+                "max": 60.37735849056604,
+                "sample_count": 110
+              },
+              "cpu2": {
+                "mean": 41.930134813594826,
+                "min": 10.204081632653061,
+                "max": 58.490566037735846,
+                "sample_count": 110
+              },
+              "cpu3": {
+                "mean": 42.25832975942367,
+                "min": 21.999999999999996,
+                "max": 63.1578947368421,
+                "sample_count": 110
+              },
+              "cpu4": {
+                "mean": 40.492559151896536,
+                "min": 28.000000000000004,
+                "max": 56.60377358490566,
+                "sample_count": 110
+              },
+              "cpu5": {
+                "mean": 37.68994568537285,
+                "min": 23.529411764705888,
+                "max": 54.90196078431373,
+                "sample_count": 110
+              },
+              "cpu6": {
+                "mean": 38.35559660217328,
+                "min": 25.0,
+                "max": 53.703703703703695,
+                "sample_count": 110
+              },
+              "cpu7": {
+                "mean": 38.854895198945826,
+                "min": 19.999999999999996,
+                "max": 53.703703703703695,
+                "sample_count": 110
+              }
+            }
+          },
+          "worker_plate_count_distributions": [
+            {
+              "2": 189
+            },
+            {
+              "2": 184
+            },
+            {
+              "2": 185
+            },
+            {
+              "2": 186
+            },
+            {
+              "2": 185
+            },
+            {
+              "2": 183
+            },
+            {
+              "2": 186
+            },
+            {
+              "2": 185
+            },
+            {
+              "2": 186
+            },
+            {
+              "2": 188
+            },
+            {
+              "2": 185
+            },
+            {
+              "2": 183
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "webcam_candidate": {
+    "frames": 280,
+    "warmup_frames": 20,
+    "backend": [
+      "rknn"
+    ],
+    "mode": [
+      "camera"
+    ],
+    "processed_fps": 14.118,
+    "measurement_seconds": 19.762,
+    "throughput_note": "Measured completion intervals; includes capture waits and preview work.",
+    "capture_sizes": [
+      [
+        1280,
+        720
+      ]
+    ],
+    "processed_sizes": [
+      [
+        1280,
+        720
+      ]
+    ],
+    "plate_count_frames": {
+      "0": 280
+    },
+    "timings_ms": {
+      "annotate": {
+        "samples": 280,
+        "mean": 0.347,
+        "median": 0.272,
+        "p95": 0.636,
+        "min": 0.228,
+        "max": 0.769
+      },
+      "capture_read": {
+        "samples": 280,
+        "mean": 66.19,
+        "median": 66.361,
+        "p95": 82.562,
+        "min": 44.871,
+        "max": 88.417
+      },
+      "crop": {
+        "samples": 280,
+        "mean": 0.0,
+        "median": 0.0,
+        "p95": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "detector_inference": {
+        "samples": 280,
+        "mean": 52.179,
+        "median": 52.08,
+        "p95": 59.181,
+        "min": 40.499,
+        "max": 78.984
+      },
+      "detector_postprocess": {
+        "samples": 280,
+        "mean": 7.859,
+        "median": 9.167,
+        "p95": 11.145,
+        "min": 2.864,
+        "max": 14.428
+      },
+      "detector_preprocess": {
+        "samples": 280,
+        "mean": 1.359,
+        "median": 1.212,
+        "p95": 1.965,
+        "min": 0.801,
+        "max": 3.688
+      },
+      "frame_age": {
+        "samples": 280,
+        "mean": 102.883,
+        "median": 100.883,
+        "p95": 135.238,
+        "min": 66.275,
+        "max": 154.627
+      },
+      "jpeg": {
+        "samples": 280,
+        "mean": 8.616,
+        "median": 8.251,
+        "p95": 11.434,
+        "min": 6.121,
+        "max": 21.668
+      },
+      "pipeline_total": {
+        "samples": 280,
+        "mean": 61.404,
+        "median": 60.974,
+        "p95": 70.497,
+        "min": 44.271,
+        "max": 82.869
+      },
+      "processing_total": {
+        "samples": 280,
+        "mean": 70.465,
+        "median": 70.048,
+        "p95": 80.449,
+        "min": 51.061,
+        "max": 91.02
+      },
+      "recognition_inference": {
+        "samples": 280,
+        "mean": 0.0,
+        "median": 0.0,
+        "p95": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "recognition_postprocess": {
+        "samples": 280,
+        "mean": 0.0,
+        "median": 0.0,
+        "p95": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "recognition_preprocess": {
+        "samples": 280,
+        "mean": 0.0,
+        "median": 0.0,
+        "p95": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "resize": {
+        "samples": 280,
+        "mean": 0.008,
+        "median": 0.008,
+        "p95": 0.01,
+        "min": 0.006,
+        "max": 0.032
+      },
+      "save": {
+        "samples": 280,
+        "mean": 0.0,
+        "median": 0.0,
+        "p95": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      }
+    },
+    "camera": {
+      "requested": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30,
+        "fourcc": "MJPG"
+      },
+      "negotiated": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "fourcc": "MJPG"
+      },
+      "settings_supported": {
+        "fourcc": true,
+        "width": true,
+        "height": true,
+        "fps": true
+      },
+      "observed": {
+        "width": 1280,
+        "height": 720,
+        "fps": 15.08
+      }
+    },
+    "mjpeg_delivery": {
+      "frames": 170,
+      "seconds": 12.041438832995482,
+      "received_fps": 14.117914176017955
+    },
+    "original_source_restored": true,
+    "original_preview_resumed": true,
+    "models_unchanged": true
+  },
+  "webcam_previous": {
+    "camera_negotiated": {
+      "width": 1280,
+      "height": 720,
+      "fourcc": "YUYV",
+      "fps": 10
+    },
+    "processed_fps_reported_median": 10.215,
+    "mjpeg_received_fps": 9.698,
+    "detected_plates": 0,
+    "note": "Previous dashboard baseline; old API FPS median and MJPEG rate. Both webcam tests have no plates, so do no OCR."
+  }
+}

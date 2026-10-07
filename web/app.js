@@ -7,6 +7,10 @@
     "fps", "latency", "plate-count", "accepted-count", "frame", "result-time", "mode",
     "feed-title", "preview", "feed-overlay", "overlay-title", "overlay-detail", "source",
     "reads", "reads-badge", "history", "history-empty", "history-count", "footer-status",
+    "pipeline-time", "resolution", "capture-resolution", "timing-state", "detector-time",
+    "ocr-time", "preview-time", "capture-time", "detector-bar", "ocr-bar", "preview-bar",
+    "capture-bar", "detector-detail", "ocr-detail", "preview-detail", "frame-age",
+    "performance-note", "camera-settings", "camera-requested", "camera-negotiated", "camera-setting-note",
   ].map((id) => [id, byId(id)]));
   const history = new Map();
   let latest = null;
@@ -100,6 +104,85 @@
     ui["overlay-title"].textContent = title;
     ui["overlay-detail"].textContent = detail;
   }
+  function duration(value) {
+    const elapsed = number(value);
+    return elapsed !== null && elapsed >= 0 ? elapsed : null;
+  }
+  function dimensions(value) {
+    return Array.isArray(value) && value.length === 2 && value.every((size) => Number.isInteger(size) && size > 0) ? value : null;
+  }
+  const dimensionText = (value) => value ? `${value[0]} × ${value[1]}` : "Unavailable";
+  const timeText = (value) => value === null ? "—" : value.toFixed(1);
+  function cameraSettingText(setting) {
+    if (!setting || typeof setting !== "object") return "Unavailable";
+    const size = dimensions([setting.width, setting.height]);
+    const rate = number(setting.fps);
+    const format = typeof setting.fourcc === "string" && setting.fourcc ? setting.fourcc : null;
+    return [size ? dimensionText(size) : "Size unavailable", rate !== null && rate > 0 ? `${Number(rate.toFixed(1))} fps` : null, format].filter(Boolean).join(" · ");
+  }
+  function renderPerformance(data, plates, staticImage, state, disconnected, stale) {
+    const timings = data.timings_ms && typeof data.timings_ms === "object" ? data.timings_ms : {};
+    const total = duration(timings.processing_total) ?? duration(data.elapsed_ms);
+    const pipeline = duration(timings.pipeline_total) ?? duration(data.elapsed_ms);
+    const frameAge = duration(timings.frame_age);
+    const sum = (keys) => {
+      const values = keys.map((key) => duration(timings[key]));
+      return values.some((value) => value === null) ? null : values.reduce((result, value) => result + value, 0);
+    };
+    const stages = {
+      detector: sum(["detector_preprocess", "detector_inference", "detector_postprocess"]),
+      ocr: sum(["crop", "recognition_preprocess", "recognition_inference", "recognition_postprocess"]),
+      preview: sum(["annotate", "jpeg"]),
+      capture: staticImage ? null : duration(timings.capture_read),
+    };
+    const denominator = frameAge ?? (total === null ? null : total + (stages.capture ?? 0));
+    for (const [key, value] of Object.entries(stages)) {
+      ui[`${key}-time`].textContent = timeText(value);
+      const proportion = value !== null && denominator !== null && denominator > 0 ? Math.min(1, Math.max(0, value / denominator)) : 0;
+      ui[`${key}-bar`].style.width = `${proportion * 100}%`;
+    }
+    ui.latency.textContent = timeText(total);
+    ui["pipeline-time"].textContent = pipeline === null ? "Latest frame · inference + preview" : `Detection + OCR ${pipeline.toFixed(1)} ms`;
+    const inference = duration(timings.detector_inference);
+    ui["detector-detail"].textContent = inference === null ? "Preprocess + inference + decode" : `Inference ${inference.toFixed(1)} ms · includes prep + decode`;
+    const recognition = duration(timings.recognition_inference);
+    ui["ocr-detail"].textContent = recognition === null ? "Crops + recognition across all plates" : plates.length ? `${plates.length} ${plates.length === 1 ? "plate" : "plates"} · inference ${recognition.toFixed(1)} ms` : "No plates to recognise";
+    const annotate = duration(timings.annotate);
+    const jpeg = duration(timings.jpeg);
+    ui["preview-detail"].textContent = annotate === null || jpeg === null ? "Annotation + JPEG encoding" : `Annotate ${annotate.toFixed(1)} ms · encode ${jpeg.toFixed(1)} ms`;
+    ui["frame-age"].textContent = frameAge === null ? "Frame age unavailable" : `Frame age ${frameAge.toFixed(1)} ms${staticImage ? "" : " · includes capture read"}`;
+    ui["performance-note"].textContent = denominator === null ? "Stage times are measured per processed frame, not camera FPS." : "Bars show time relative to frame age. OCR includes all detected plates.";
+    const measured = Object.values(stages).some((value) => value !== null);
+    ui["timing-state"].textContent = disconnected || stale ? "Last result" : state === "error" ? "Stopped on error" : state === "stopped" ? "Stopped" : staticImage && measured ? "Still image" : measured ? "Measured" : "Waiting";
+
+    const size = data.frame_size && typeof data.frame_size === "object" ? data.frame_size : {};
+    const processed = dimensions(size.processed);
+    const capture = dimensions(size.capture);
+    ui.resolution.textContent = processed ? dimensionText(processed) : "—";
+    ui["capture-resolution"].textContent = capture ? `Captured ${dimensionText(capture)}${size.software_scaled === true ? " · resized to bound processing" : ""}` : "Waiting for an actual frame";
+    ui["capture-resolution"].className = `metric-hint${size.software_scaled === true ? " scaled" : ""}`;
+    const camera = data.camera && typeof data.camera === "object" ? data.camera : null;
+    ui["camera-settings"].hidden = data.mode !== "camera" || camera === null;
+    if (camera) {
+      ui["camera-requested"].textContent = cameraSettingText(camera.requested);
+      ui["camera-negotiated"].textContent = cameraSettingText(camera.negotiated);
+      ui["camera-setting-note"].textContent = "Camera-reported FPS is a capture setting; processing speed above is measured separately.";
+    }
+  }
+  function previewEndpoint(data) {
+    const staticImage = data && (data.mode === "sample" || data.mode === "image");
+    return staticImage && number(data.frame) !== null ? "/snapshot.jpg" : "/stream.mjpg";
+  }
+  function updatePreview(data, newFrame) {
+    const endpoint = previewEndpoint(data);
+    const current = new URL(ui.preview.getAttribute("src") || "/stream.mjpg", window.location.href).pathname;
+    if (current !== endpoint || (endpoint === "/snapshot.jpg" && newFrame)) {
+      feedFailed = false;
+      nextFeedRetryAt = Date.now() + 3000;
+      const sequence = number(data.sequence);
+      ui.preview.src = `${endpoint}?sequence=${sequence ?? Date.now()}`;
+    }
+  }
   function render(data, newFrame) {
     const state = typeof data.status === "string" ? data.status : "loading";
     const mode = typeof data.mode === "string" ? data.mode : "unknown";
@@ -109,6 +192,7 @@
     const disconnected = failedPolls >= 2 || Date.now() - lastSuccessfulPoll > 3500;
     const stale = !staticImage && state === "live" && Date.now() - lastFrameAt > 10000;
     const hasFrame = number(data.frame) !== null;
+    updatePreview(data, newFrame);
     const sourceNames = {camera: "Webcam", video: networkStream ? "Live stream" : "Video playback", image: "Image preview", sample: "Sample preview"};
     ui["feed-title"].textContent = sourceNames[mode] || "Camera preview";
     ui.source.textContent = typeof data.source === "string" && data.source ? data.source : "Waiting for pipeline";
@@ -153,9 +237,8 @@
     }
 
     const fps = number(data.fps);
-    const latency = number(data.elapsed_ms);
     ui.fps.textContent = staticImage || disconnected || stale || state === "stopped" || state === "error" ? "—" : fps !== null && fps >= 0 ? fps.toFixed(1) : "—";
-    ui.latency.textContent = latency !== null && latency >= 0 ? latency.toFixed(1) : "—";
+    renderPerformance(data, plates, staticImage, state, disconnected, stale);
     ui["plate-count"].textContent = hasFrame ? String(plates.length) : "—";
     ui["accepted-count"].textContent = hasFrame ? `${plates.filter((plate) => plate.accepted === true).length} accepted · ${plates.length} detected` : "Waiting for a result";
     ui.frame.textContent = hasFrame ? String(data.frame) : "—";
@@ -171,7 +254,7 @@
   function reconnectFeed() {
     feedFailed = false;
     nextFeedRetryAt = Date.now() + 3000;
-    ui.preview.src = `/stream.mjpg?reconnect=${Date.now()}`;
+    ui.preview.src = `${previewEndpoint(latest)}?reconnect=${Date.now()}`;
     if (latest) render(latest, false);
   }
   ui.preview.addEventListener("error", () => {

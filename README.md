@@ -9,7 +9,7 @@ demo using the same Debian Bookworm / Python 3.11 / RKNNLite conventions.
 ```text
 image / camera / video / RTSP
   -> plate-trained YOLOv5 detector on RK3588 NPU
-  -> confidence filter + NMS + map boxes back to original frame
+  -> confidence filter + NMS + map boxes to the processed frame
   -> perspective crop using four plate corners
   -> PP-OCRv4 recognition on RK3588 NPU
   -> CTC decoding -> JSON plate strings and confidence
@@ -46,7 +46,10 @@ docker buildx build --platform linux/arm64 -f Dockerfile.anpr \
 
 The default container starts a small dashboard on port **8000** and uses the
 webcam at `/dev/video0` when it is present. With no webcam it displays the
-bundled sample image and labels it as a sample. On the board:
+bundled sample image and labels it as a sample. Deploy the OCI image as an
+Admiral workload with its default entrypoint/arguments and port 8000 reachable.
+The AdmiralOS board used for validation has `crun`, without a Docker daemon.
+On an RK3588 Linux host with Docker, the equivalent helper is:
 
 ```sh
 ./scripts/run-anpr.sh
@@ -61,7 +64,8 @@ permissions. All page assets are served by the container, so it works offline.
 The `Build and Push Docker Image` workflow publishes pushes to `anpr-rk3588`
 using `Dockerfile.anpr` as:
 `ghcr.io/admrlos/admrl-demo/systemd-container:anpr-rk3588`.
-To use that image on the board after the workflow succeeds:
+Use that registry image in the Admiral workload after the workflow succeeds.
+On a Docker-equipped RK3588 host:
 
 ```sh
 ANPR_IMAGE=ghcr.io/admrlos/admrl-demo/systemd-container:anpr-rk3588 ./scripts/run-anpr.sh
@@ -130,6 +134,23 @@ updating, and retains the last result for inspection.
 
 Camera and RTSP capture continuously keep only the newest frame while inference
 runs. This prevents an old-frame backlog when OCR is slower than camera capture.
+Webcams request **1280×720, MJPEG, 30 fps** by default. The backend's reported
+settings, received dimensions and processing rate appear on the dashboard.
+The JSON API also reports the observed capture rate.
+Four driver buffers keep capture moving during MJPEG decoding; inference still
+receives only the latest available frame.
+If the driver ignores the resolution request, camera frames are downscaled to
+fit 1280×720 before detection, crops and preview encoding, keeping their aspect
+ratio. Smaller camera frames are not enlarged. Image and video file dimensions
+are preserved. The MJPEG endpoint sends each newly processed preview without
+the original fixed 10 fps delay.
+
+Override capture settings with `--camera-width`, `--camera-height`,
+`--camera-fps` and `--camera-fourcc`. For a camera without MJPEG support, use
+`--camera-fourcc auto` to keep its default format. A camera may deliver less
+than the requested frame rate; the measured processing rate also depends on
+plate count, model execution and CPU work.
+
 Displayed FPS measures processed-frame throughput and stays blank for a still
 image. The browser's recent-read history holds up to 20 distinct strings and
 resets when the page reloads; it does not perform tracking or temporal consensus.
@@ -138,15 +159,106 @@ Confidence values are model scores, not calibrated probabilities of a correct
 plate. Detection and OCR confidence are returned separately so consumers can
 choose thresholds suitable for their camera. Consult `--help` for all options.
 
-Each frame record contains `source`, `frame`, `elapsed_ms` and a `plates` array.
+Each frame record contains `source`, `frame`, `elapsed_ms` and a `plates` array,
+plus `frame_size`, `timings_ms`, measured `fps`, `processed_at` (a monotonic
+completion timestamp) and `processing_interval_ms`. Camera records include
+`camera.requested`, `camera.negotiated`, `camera.settings_supported` and
+`camera.observed`; a successful property setter only indicates backend support.
+The observed dimensions and capture rate come from received frames.
 The `/results` API also includes `status`, `mode`, `backend`, `sequence`,
 `timestamp`, and measured `fps`. Camera frame indices may skip as older captured
 frames are replaced by newer ones. Camera URL credentials are redacted from
 results and dashboard source labels.
 Each plate contains the raw Unicode `text`, a space-stripped `plate`, `bbox`
-coordinates `[x0,y0,x1,y1]` in original-frame pixels, `corners`, `layout`,
+coordinates `[x0,y0,x1,y1]` in processed-frame pixels, `corners`, `layout`,
 `detection_confidence`, `recognition_confidence`, their product `confidence`, and
 `accepted`. No region-specific substitutions are applied to the OCR text.
+
+## Measuring performance on the board
+
+Keep the same view and plate count when comparing runs. Capture 20 warmup frames
+and 200 measured frames with the dashboard enabled, so preview work is included:
+
+```sh
+./scripts/run-anpr.sh --source 0 --serve --max-frames 220 > camera-720p.jsonl
+python3 scripts/benchmark_anpr.py camera-720p.jsonl --warmup 20 > camera-720p-summary.json
+```
+
+The summary reports actual completion throughput, median/p95 stage timings,
+received/processed sizes and the number of plates in each frame. It never
+calculates FPS by taking the inverse of inference latency. Capture runs on its
+own thread, so capture-read time is reported separately from processing time.
+Keep the live dashboard open during the run if comparing browser streaming.
+If the demo is already using the camera, stop that workload before running a
+second camera benchmark.
+
+`--npu-cores auto` uses the Rockchip automatic single-core assignment.
+`--npu-cores all` uses all three RK3588 NPU cores with the same FP16 models;
+individual cores are selectable with `0`, `1` or `2`. Compare the same scene
+and plate count before choosing a setting. Lower camera resolution reduces CPU
+and USB work; the detector still runs at its fixed 640×640 model input.
+
+### Find the device ceiling
+
+The tested RK3588 sustained **37.083 full ANPR frames/sec aggregate** on a
+fixed 720p scene with two detected plates per frame, using all three NPU cores.
+That is **1.236 × 30 FPS** of processing budget, before capture, decoding and
+network costs. The single-worker webcam test reached **14.118 FPS** in a scene
+with no plates, while the camera delivered about 15 FPS. These are different
+workloads; see [the measured results and limits](VALIDATION.md).
+
+Run the saturated benchmark with the usual demo stopped so it does not compete
+for NPU time. For an Admiral workload, supply `--capacity ...` arguments in
+place of the default `--serve` arguments, then restore `--serve` for the camera
+dashboard. Inside an ANPR container with no competing inference:
+
+```sh
+/venv/bin/python /opt/anpr/anpr.py --capacity \
+  --streams 1 3 6 12 18 24 --workload plates --duration 20 --warmup 5 \
+  --cpu-cores all --opencv-threads 1 > capacity-plates.json
+
+# Repeat the best concurrency for a longer measurement.
+/venv/bin/python /opt/anpr/anpr.py --capacity \
+  --streams 12 --workload plates --duration 60 --warmup 10 \
+  --cpu-cores all --opencv-threads 1 > capacity-plates-sustained.json
+
+# A separate detection-only workload; no plates means no OCR work.
+/venv/bin/python /opt/anpr/anpr.py --capacity \
+  --streams 3 6 12 --workload empty --duration 20 --warmup 5 \
+  --cpu-cores all --opencv-threads 1 > capacity-empty.json
+```
+
+`--capacity` must be the first argument. Each worker is an independent spawned
+process with its detector and recognizer pinned to one NPU core; workers rotate
+across cores 0, 1 and 2. Inputs are exactly 1280×720. The public two-plate sample
+is resized with its aspect ratio preserved and padded before timing. The
+`plates` workload requires two detected plates on every measured frame; `empty`
+requires zero. Model execution, every plate crop/OCR, annotation and JPEG quality
+80 encoding are included. Capture, camera decoding, network transmission, input
+preparation, initialization and warmup are excluded.
+
+The report counts completed frames in a shared measurement window, checks
+worker cleanup, records hashes and CPU affinity, and reports aggregate FPS,
+per-worker FPS and median/p95 stage times. `/sys/kernel/debug/rknpu/load` is
+sampled when visible; otherwise load statistics are explicitly unavailable.
+Increasing workers until aggregate FPS plateaus finds the processing ceiling
+for these models and workloads. The `--target-fps` default is 30: aggregate
+FPS / 30 is a fractional processing budget, while a verified stream count
+requires every tested worker to sustain 30 FPS individually. The synchronous
+webcam demo remains a single worker; the benchmark does not turn it into a
+multistream scheduler.
+
+By default, RKNN processes use the highest-capacity CPU cluster exposed by the
+kernel and two OpenCV threads. On the tested RK3588 this selects its four A76
+cores; it improves the single-worker two-plate workload. This only changes the
+application's affinity within its allowed CPUs. Use `--cpu-cores all` to retain
+the inherited mask, or explicit CPU IDs, and `--opencv-threads` to compare
+scheduling. All eight CPUs performed better for the saturated benchmark; the
+commands above use that setting. No clocks or governors are changed. ONNX keeps
+its inherited CPUs with the default `auto` policy. Recorded CPU capacity and actual affinity make
+these comparisons reproducible.
+
+Actual board measurements and their scope are in [VALIDATION.md](VALIDATION.md).
 
 ## Models and repeatability
 
@@ -217,9 +329,10 @@ when explicitly selected; the default runtime requires the NPU. Build and
 validation commands and the results of this implementation are in
 [VALIDATION.md](VALIDATION.md).
 
-NPU inference, driver compatibility and real-time performance must be checked
-on the Admiral RK3588. A successful build or CPU result does not verify those
-hardware properties. Missing/incompatible NPU access fails at startup.
+NPU inference and processing throughput were measured on an Admiral RK3588;
+see [VALIDATION.md](VALIDATION.md) for the hardware results and workload limits.
+A successful build or CPU result alone does not verify NPU performance on another
+device. Missing/incompatible NPU access fails at startup.
 
 ## Original YOLO11 demo
 

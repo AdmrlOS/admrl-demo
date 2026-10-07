@@ -9,6 +9,7 @@ on:
       - 'anpr.py'
       - 'web/**'
       - 'scripts/*anpr*'
+      - 'scripts/benchmark_capacity.py'
       - 'scripts/model_sources.json'
       - 'tests/**'
       - '.github/workflows/anpr.yml'
@@ -19,6 +20,7 @@ on:
       - 'anpr.py'
       - 'web/**'
       - 'scripts/*anpr*'
+      - 'scripts/benchmark_capacity.py'
       - 'scripts/model_sources.json'
       - 'tests/**'
       - '.github/workflows/anpr.yml'
@@ -47,6 +49,7 @@ jobs:
       - name: Verify runtime CLI
         run: |
           docker run --rm admrl-anpr:rk3588 --help
+          docker run --rm admrl-anpr:rk3588 --capacity --help
       - name: Build CPU test image and run unit suite
         uses: docker/build-push-action@v6
         with:
